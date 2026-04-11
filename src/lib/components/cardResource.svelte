@@ -1,4 +1,7 @@
 <script>
+	import { flip } from 'svelte/animate';
+	import { fade } from 'svelte/transition';
+
 	let { titulo, descripcion, categorias, url, tipo, nivel, image_url, idioma } = $props();
 
 	const nivelColor = {
@@ -19,7 +22,8 @@
 <a
 	href={url}
 	target="_blank"
-	class="block border border-gray-200 rounded-b-xl overflow-hidden hover:-translate-y-1 transition-all duration-200"
+	class="block border border-gray-200 rounded-b-xl overflow-hidden hover:-translate-y-1 transition-all duration-200,"
+	transition:fade={{ duration: 300 }}
 >
 	<div class="h-40 overflow-hidden bg-gray-100">
 		<img src={image_url} alt={titulo} class="w-full h-full object-cover" />
