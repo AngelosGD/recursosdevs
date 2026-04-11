@@ -1,5 +1,5 @@
 <script>
-	let { titulo, descripcion, categorias, url, tipo, nivel, imagen } = $props();
+	let { titulo, descripcion, categorias, url, tipo, nivel, image_url, idioma } = $props();
 
 	const nivelColor = {
 		Principiante: 'bg-green-100 text-green-700',
@@ -22,7 +22,7 @@
 	class="block border border-gray-200 rounded-b-xl overflow-hidden hover:-translate-y-1 transition-all duration-200"
 >
 	<div class="h-40 overflow-hidden bg-gray-100">
-		<img src={imagen} alt={titulo} class="w-full h-full object-cover" />
+		<img src={image_url} alt={titulo} class="w-full h-full object-cover" />
 	</div>
 
 	<div class="p-5">

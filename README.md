@@ -49,3 +49,9 @@ Guias
 FRONTEND
 diseño
 base de datos
+
+contraseña de la bd --
+
+> # NO SE TE OLVIDE BORRAR RESTO CAON
+>
+> LLj84HLjAZ4pZqrt

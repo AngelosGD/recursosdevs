@@ -1,44 +1,8 @@
 <script>
 	import RecursoCard from '$lib/components/cardResource.svelte';
-	import roadMapImg from '$lib/assets/roadmap.png';
-	import frontImg from '$lib/assets/frontent.png';
-	import postgresnew from '$lib/assets/databaseBuild.png';
 
-	const recursos = [
-		{
-			id: 1,
-			imagen: roadMapImg,
-			titulo: 'Roadmap.sh',
-			descripcion:
-				'Aprende que conceptos aprender por orden para el lenguaje que busques mediante una manera de mapa.',
-			categorias: ['Full Stack', 'Aprender', 'Guias'],
-			url: 'https://roadmap.sh',
-			tipo: 'Pagina',
-			nivel: 'Variado'
-		},
-		{
-			id: 2,
-			imagen: frontImg,
-			titulo: 'Frontendmentor',
-			descripcion:
-				'Encuentra desafios de menor a mayor nivel para que aprendas o tengas un poco mas claro que puede ser tu siguiente proyecto',
-			categorias: ['Guias', 'Frontend', 'Diseño'],
-			url: 'https://www.frontendmentor.io',
-			tipo: 'Pagina',
-			nivel: 'Variado'
-		},
-		{
-			id: 3,
-			imagen: postgresnew,
-			titulo: 'database.build',
-			descripcion:
-				'Crea/Modela bases de datos de manera rapida con un prompt y la opcion de migrar a tu proyecto.',
-			categorias: ['Bases de datos'],
-			url: 'https://database.build',
-			tipo: 'Pagina',
-			nivel: 'Medio'
-		}
-	];
+	let { data } = $props();
+	let recursos = data.recursos;
 
 	let categoriaActiva = $state('Todos');
 
