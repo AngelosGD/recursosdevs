@@ -5,8 +5,14 @@ export async function load() {
 
 	const { data: todos } = await supabase.from('recursos').select('*');
 
+	const { data: mensajes } = await supabase
+		.from('contacto')
+		.select('*')
+		.order('created_at', { ascending: false });
+
 	return {
 		pendientes: pendientes ?? [],
-		todos: todos ?? []
+		todos: todos ?? [],
+		mensajes: mensajes ?? []
 	};
 }

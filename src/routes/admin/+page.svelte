@@ -1,17 +1,21 @@
 <script>
 	import { supabase } from '$lib/supabase.js';
+	import { SvelteURL } from 'svelte/reactivity';
 
 	let { data } = $props();
 
 	let pendientes = $state(data.pendientes);
 	let todos = $state(data.todos);
+	let mensajes = $state(data.mensajes);
+	let vistasMensajes = $state('pendientes');
+
 	let vista = $state('pendientes');
 	let busqueda = $state('');
 
 	let titulo = $state('');
 	let descripcion = $state('');
 	let url = $state('');
-	let imagen_url = $state('');
+	let image_url = $state('');
 	let tipo = $state('Pagina');
 	let nivel = $state('Principiante');
 	let idioma = $state('Español');
@@ -46,7 +50,7 @@
 				titulo,
 				descripcion,
 				url,
-				imagen_url,
+				image_url,
 				tipo,
 				nivel,
 				idioma,
@@ -66,9 +70,18 @@
 		titulo = '';
 		descripcion = '';
 		url = '';
-		imagen_url = '';
+		image_url = '';
 		categorias = '';
 		agregando = false;
+	}
+	async function marcarLeido(id) {
+		await supabase.from('contacto').update({ leido: true }).eq('id', id);
+		mensajes = mensajes.map((m) => (m.id === id ? { ...m, leido: true } : m));
+	}
+
+	async function eliminarMensaje(id) {
+		await supabase.from('contacto').delete().eq('id', id);
+		mensajes = mensajes.filter((m) => m.id !== id);
 	}
 </script>
 
@@ -115,7 +128,7 @@
 				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-blue-400"
 			/>
 			<input
-				bind:value={imagen_url}
+				bind:value={image_url}
 				placeholder="URL imagen"
 				type="url"
 				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-blue-400"
@@ -234,4 +247,74 @@
 			</div>
 		{/each}
 	</div>
+
+	SvelteURL
 {/if}
+<!-- Mensajes de contacto -->
+<div class="mt-10">
+	<div class="flex items-center justify-between mb-4">
+		<h2 class="text-lg font-bold text-gray-900">
+			Mensajes de contacto
+			<span class="text-sm font-normal text-gray-400">({mensajes.length})</span>
+		</h2>
+		<div class="flex gap-2">
+			<button
+				onclick={() => (vistasMensajes = 'pendientes')}
+				class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+					{vistasMensajes === 'pendientes'
+					? 'bg-blue-600 text-white'
+					: 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
+			>
+				Pendientes ({mensajes.filter((m) => !m.leido).length})
+			</button>
+			<button
+				onclick={() => (vistasMensajes = 'leidos')}
+				class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+					{vistasMensajes === 'leidos'
+					? 'bg-blue-600 text-white'
+					: 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
+			>
+				Leídos ({mensajes.filter((m) => m.leido).length})
+			</button>
+		</div>
+	</div>
+
+	{#if mensajes.filter((m) => (vistasMensajes === 'pendientes' ? !m.leido : m.leido)).length === 0}
+		<p class="text-gray-400 text-sm">No hay mensajes.</p>
+	{:else}
+		<div class="flex flex-col gap-3">
+			{#each mensajes.filter( (m) => (vistasMensajes === 'pendientes' ? !m.leido : m.leido) ) as m (m.id)}
+				<div class="border border-gray-200 rounded-2xl p-5">
+					<div class="flex items-start justify-between gap-4">
+						<div>
+							<div class="flex items-center gap-2 mb-1">
+								<span class="font-medium text-gray-900">{m.nombre}</span>
+								<span class="text-xs text-gray-400"
+									>{new Date(m.created_at).toLocaleDateString()}</span
+								>
+							</div>
+							<p class="text-xs text-blue-500 mb-2">{m.email}</p>
+							<p class="text-sm text-gray-600">{m.mensaje}</p>
+						</div>
+						<div class="flex gap-2 shrink-0">
+							{#if !m.leido}
+								<button
+									onclick={() => marcarLeido(m.id)}
+									class="bg-green-100 text-green-600 px-3 py-1.5 rounded-xl text-xs hover:bg-green-200 transition-colors"
+								>
+									Marcar leído
+								</button>
+							{/if}
+							<button
+								onclick={() => eliminarMensaje(m.id)}
+								class="bg-red-100 text-red-500 px-3 py-1.5 rounded-xl text-xs hover:bg-red-200 transition-colors"
+							>
+								Eliminar
+							</button>
+						</div>
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/if}
+</div>

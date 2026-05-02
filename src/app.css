@@ -1,1 +1,89 @@
 @import 'tailwindcss';
+
+body {
+	background: transparent;
+	position: relative;
+}
+@keyframes blob {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	33% {
+		transform: translate(30px, -50px) scale(1.1);
+	}
+	66% {
+		transform: translate(-20px, 20px) scale(0.9);
+	}
+}
+
+.animate-blob {
+	animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+	animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+	animation-delay: 4s;
+}
+
+@layer components {
+	.btn-gradient {
+		@apply bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200;
+	}
+
+	.input-primary {
+		@apply px-4 py-3 rounded-xl border-2 border-gray-200 hover:border-gray-300 focus:border-blue-500 focus:outline-none bg-white/50 text-gray-800 placeholder:text-gray-400 transition-all;
+	}
+
+	.card-glass {
+		@apply bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50;
+	}
+}
+.particulas {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 0;
+	overflow: hidden;
+}
+.particula {
+	position: absolute;
+	color: #3b82f6;
+	font-size: 14px;
+	font-family: monospace;
+	opacity: 0;
+	animation: flotar linear infinite;
+	user-select: none;
+}
+
+@keyframes flotar {
+	0% {
+		opacity: 0;
+		transform: translateY(100vh) rotate(0deg);
+	}
+	10% {
+		opacity: 0.45;
+	}
+	90% {
+		opacity: 0.45;
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(-100px) rotate(360deg);
+	}
+}
+html {
+	background: white;
+}
+
+body {
+	background: transparent !important;
+	position: relative;
+	min-height: 100vh;
+}

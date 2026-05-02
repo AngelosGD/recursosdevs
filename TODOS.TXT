@@ -1,0 +1,12 @@
+importantes/funcionalidad:
+
+-no dejar enviar el recurso sin campos completos-✅
+mejorar lo del auth xd
+seccion de perfil maybe?
+hjacer los links pocos qe hay del sitio, funcionales
+
+
+de diseño:
+
+quitar el contacto o el reportar fallo y pasarlo a otra ventana independiente
+bajar la barra de busqueda hacia abajo del apartado de ultimos recursos✅

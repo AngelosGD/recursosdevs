@@ -1,12 +1,17 @@
 import { supabase } from '$lib/supabase.js';
 
 export async function load() {
-	const { data, error } = await supabase.from('recursos').select('*').eq('aprobado', true);
+	const { data: recursos } = await supabase.from('recursos').select('*').eq('aprobado', true);
 
-	if (error) {
-		console.error(error);
-		return { recursos: [] };
-	}
+	const { data: recientes } = await supabase
+		.from('recursos')
+		.select('*')
+		.eq('aprobado', true)
+		.order('created_at', { ascending: false })
+		.limit(3);
 
-	return { recursos: data };
+	return {
+		recursos: recursos ?? [],
+		recientes: recientes ?? []
+	};
 }

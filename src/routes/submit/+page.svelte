@@ -11,8 +11,11 @@
 	let enviado = $state(false);
 	let cargando = $state(false);
 	let image_url = $state('');
+	let errores = $state({});
 
 	async function enviarRecurso() {
+		errores = validar();
+		if (Object.keys(errores).length > 0) return;
 		cargando = true;
 
 		const { error } = await supabase.from('recursos').insert({
@@ -36,6 +39,16 @@
 
 		enviado = true;
 	}
+
+	function validar() {
+		const e = {};
+		if (!titulo.trim()) e.titulo = 'El nombre es obligatorio';
+		if (!descripcion.trim()) e.descripcion = 'La descripción es obligatoria';
+		if (!url.trim()) e.url = 'La URL es obligatoria';
+		else if (!url.startsWith('http')) e.url = 'La URL debe empezar con http';
+		if (!categorias.trim()) e.categorias = 'Agrega al menos una categoría';
+		return e;
+	}
 </script>
 
 {#if enviado}
@@ -57,8 +70,14 @@
 					bind:value={titulo}
 					type="text"
 					placeholder="Ej: The Odin Project"
-					class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400"
+					class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors
+            {errores.titulo
+						? 'border-red-400 focus:border-red-400'
+						: 'border-gray-200 focus:border-blue-400'}"
 				/>
+				{#if errores.titulo}
+					<p class="text-red-500 text-xs mt-1">{errores.titulo}</p>
+				{/if}
 			</div>
 
 			<div>
@@ -67,8 +86,14 @@
 					bind:value={descripcion}
 					rows="3"
 					placeholder="¿De qué trata y por qué lo recomiendas?"
-					class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400"
+					class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors
+            {errores.descripcion
+						? 'border-red-400 focus:border-red-400'
+						: 'border-gray-200 focus:border-blue-400'}"
 				></textarea>
+				{#if errores.descripcion}
+					<p class="text-red-500 text-xs mt-1">{errores.descripcion}</p>
+				{/if}
 			</div>
 
 			<div>
@@ -77,18 +102,14 @@
 					bind:value={url}
 					type="url"
 					placeholder="https://..."
-					class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400"
+					class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors
+            {errores.url
+						? 'border-red-400 focus:border-red-400'
+						: 'border-gray-200 focus:border-blue-400'}"
 				/>
-			</div>
-
-			<div>
-				<label class="block text-sm font-medium text-gray-700 mb-1">URL de la imagen</label>
-				<input
-					bind:value={image_url}
-					type="url"
-					placeholder="https://..."
-					class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400"
-				/>
+				{#if errores.url}
+					<p class="text-red-500 text-xs mt-1">{errores.url}</p>
+				{/if}
 			</div>
 
 			<div>
@@ -99,8 +120,14 @@
 					bind:value={categorias}
 					type="text"
 					placeholder="Frontend, Guias, Diseño"
-					class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400"
+					class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors
+            {errores.categorias
+						? 'border-red-400 focus:border-red-400'
+						: 'border-gray-200 focus:border-blue-400'}"
 				/>
+				{#if errores.categorias}
+					<p class="text-red-500 text-xs mt-1">{errores.categorias}</p>
+				{/if}
 			</div>
 
 			<div class="grid grid-cols-3 gap-4">
