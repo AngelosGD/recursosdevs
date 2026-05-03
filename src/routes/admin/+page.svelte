@@ -86,83 +86,83 @@
 </script>
 
 <div class="flex items-center justify-between mb-8">
-	<h1 class="text-3xl font-bold text-gray-900">Panel admin</h1>
+	<h1 class="text-3xl font-bold text-gray-900 dark:text-white">Panel admin</h1>
 	<button
 		onclick={() => (agregando = !agregando)}
-		class="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm hover:bg-blue-700 transition-colors"
+		class="bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
 	>
 		{agregando ? 'Cancelar' : '+ Agregar recurso'}
 	</button>
 </div>
 
 <!-- Stats -->
-<div class="grid grid-cols-3 gap-4 mb-8">
-	<div class="border border-gray-200 rounded-2xl p-5">
-		<p class="text-sm text-gray-400 mb-1">Recursos totales</p>
-		<p class="text-4xl font-bold text-gray-900">{todos.length}</p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+	<div class="border border-gray-200 dark:border-gray-700 rounded-2xl p-4 sm:p-5 bg-white dark:bg-gray-800">
+		<p class="text-sm text-gray-400 dark:text-gray-500 mb-1">Recursos totales</p>
+		<p class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">{todos.length}</p>
 	</div>
-	<div class="border border-yellow-200 bg-yellow-50 rounded-2xl p-5">
-		<p class="text-sm text-yellow-600 mb-1">Pendientes</p>
-		<p class="text-4xl font-bold text-yellow-600">{pendientes.length}</p>
+	<div class="border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-4 sm:p-5">
+		<p class="text-sm text-yellow-600 dark:text-yellow-400 mb-1">Pendientes</p>
+		<p class="text-3xl sm:text-4xl font-bold text-yellow-600 dark:text-yellow-400">{pendientes.length}</p>
 	</div>
-	<div class="border border-green-200 bg-green-50 rounded-2xl p-5">
-		<p class="text-sm text-green-600 mb-1">Aprobados</p>
-		<p class="text-4xl font-bold text-green-600">{todos.filter((r) => r.aprobado).length}</p>
+	<div class="border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 sm:p-5">
+		<p class="text-sm text-green-600 dark:text-green-400 mb-1">Aprobados</p>
+		<p class="text-3xl sm:text-4xl font-bold text-green-600 dark:text-green-400">{todos.filter((r) => r.aprobado).length}</p>
 	</div>
 </div>
 
 <!-- Formulario agregar -->
 {#if agregando}
-	<div class="border border-blue-200 bg-blue-50 rounded-2xl p-6 mb-8 flex flex-col gap-4">
-		<h2 class="font-bold text-gray-900">Agregar recurso</h2>
-		<div class="grid grid-cols-2 gap-4">
+	<div class="border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 sm:p-6 mb-8 flex flex-col gap-4">
+		<h2 class="font-bold text-gray-900 dark:text-white">Agregar recurso</h2>
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 			<input
 				bind:value={titulo}
 				placeholder="Título"
-				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-blue-400"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-400"
 			/>
 			<input
 				bind:value={url}
 				placeholder="URL"
 				type="url"
-				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-blue-400"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-400"
 			/>
 			<input
 				bind:value={image_url}
 				placeholder="URL imagen"
 				type="url"
-				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-blue-400"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-400"
 			/>
 			<input
 				bind:value={categorias}
 				placeholder="Categorías separadas por coma"
-				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-blue-400"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-400"
 			/>
 		</div>
 		<textarea
 			bind:value={descripcion}
 			placeholder="Descripción"
 			rows="2"
-			class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-blue-400"
+			class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-400"
 		></textarea>
-		<div class="grid grid-cols-3 gap-4">
+		<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 			<select
 				bind:value={tipo}
-				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white"
 			>
 				<option>Pagina</option><option>Gratis</option><option>De pago</option>
 				<option>Herramienta</option><option>Descargable</option>
 			</select>
 			<select
 				bind:value={nivel}
-				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white"
 			>
 				<option>Principiante</option><option>Intermedio</option>
 				<option>Avanzado</option><option>Variado</option>
 			</select>
 			<select
 				bind:value={idioma}
-				class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white"
 			>
 				<option>Español</option><option>Inglés</option>
 			</select>
@@ -170,7 +170,7 @@
 		<button
 			onclick={agregarRecurso}
 			disabled={cargando}
-			class="bg-blue-600 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+			class="bg-blue-600 dark:bg-blue-500 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:opacity-50"
 		>
 			{cargando ? 'Guardando...' : 'Guardar recurso'}
 		</button>
@@ -178,19 +178,19 @@
 {/if}
 
 <!-- Filtros y búsqueda -->
-<div class="flex items-center gap-4 mb-6">
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
 	<div class="flex gap-2">
 		<button
 			onclick={() => (vista = 'pendientes')}
-			class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-				{vista === 'pendientes' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
+			class="px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+				{vista === 'pendientes' ? 'bg-blue-600 text-white dark:bg-blue-500' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 		>
 			Pendientes ({pendientes.length})
 		</button>
 		<button
 			onclick={() => (vista = 'todos')}
-			class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-				{vista === 'todos' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
+			class="px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+				{vista === 'todos' ? 'bg-blue-600 text-white dark:bg-blue-500' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 		>
 			Todos ({todos.length})
 		</button>
@@ -198,33 +198,33 @@
 	<input
 		bind:value={busqueda}
 		placeholder="Buscar recurso..."
-		class="flex-1 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
+		class="w-full sm:flex-1 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-400 dark:focus:border-blue-500 bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
 	/>
 </div>
 
 <!-- Lista -->
 {#if recursosMostrados().length === 0}
-	<p class="text-gray-400 text-sm">No hay recursos.</p>
+	<p class="text-gray-400 dark:text-gray-500 text-sm">No hay recursos.</p>
 {:else}
 	<div class="flex flex-col gap-3">
 		{#each recursosMostrados() as recurso (recurso.id)}
-			<div class="border border-gray-200 rounded-2xl p-5 flex items-start justify-between gap-4">
+			<div class="border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex items-start justify-between gap-4 bg-white dark:bg-gray-800">
 				<div>
 					<div class="flex items-center gap-2 mb-1">
-						<span class="font-bold text-gray-900">{recurso.titulo}</span>
-						<span class="text-xs text-gray-400">{recurso.tipo} · {recurso.nivel}</span>
+						<span class="font-bold text-gray-900 dark:text-white">{recurso.titulo}</span>
+						<span class="text-xs text-gray-400 dark:text-gray-500">{recurso.tipo} · {recurso.nivel}</span>
 						{#if recurso.aprobado}
-							<span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full"
+							<span class="text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full"
 								>Aprobado</span
 							>
 						{:else}
-							<span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-0.5 rounded-full"
+							<span class="text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 px-2 py-0.5 rounded-full"
 								>Pendiente</span
 							>
 						{/if}
 					</div>
-					<p class="text-sm text-gray-500 mb-1">{recurso.descripcion}</p>
-					<a href={recurso.url} target="_blank" class="text-xs text-blue-500 hover:underline"
+					<p class="text-sm text-gray-500 dark:text-gray-400 mb-1">{recurso.descripcion}</p>
+					<a href={recurso.url} target="_blank" class="text-xs text-blue-500 dark:text-blue-400 hover:underline"
 						>{recurso.url}</a
 					>
 				</div>
@@ -247,23 +247,21 @@
 			</div>
 		{/each}
 	</div>
-
-	SvelteURL
 {/if}
 <!-- Mensajes de contacto -->
 <div class="mt-10">
 	<div class="flex items-center justify-between mb-4">
-		<h2 class="text-lg font-bold text-gray-900">
+		<h2 class="text-lg font-bold text-gray-900 dark:text-white">
 			Mensajes de contacto
-			<span class="text-sm font-normal text-gray-400">({mensajes.length})</span>
+			<span class="text-sm font-normal text-gray-400 dark:text-gray-500">({mensajes.length})</span>
 		</h2>
 		<div class="flex gap-2">
 			<button
 				onclick={() => (vistasMensajes = 'pendientes')}
 				class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors
 					{vistasMensajes === 'pendientes'
-					? 'bg-blue-600 text-white'
-					: 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
+					? 'bg-blue-600 text-white dark:bg-blue-500'
+					: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 			>
 				Pendientes ({mensajes.filter((m) => !m.leido).length})
 			</button>
@@ -271,8 +269,8 @@
 				onclick={() => (vistasMensajes = 'leidos')}
 				class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors
 					{vistasMensajes === 'leidos'
-					? 'bg-blue-600 text-white'
-					: 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
+					? 'bg-blue-600 text-white dark:bg-blue-500'
+					: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 			>
 				Leídos ({mensajes.filter((m) => m.leido).length})
 			</button>
@@ -280,34 +278,34 @@
 	</div>
 
 	{#if mensajes.filter((m) => (vistasMensajes === 'pendientes' ? !m.leido : m.leido)).length === 0}
-		<p class="text-gray-400 text-sm">No hay mensajes.</p>
+		<p class="text-gray-400 dark:text-gray-500 text-sm">No hay mensajes.</p>
 	{:else}
 		<div class="flex flex-col gap-3">
 			{#each mensajes.filter( (m) => (vistasMensajes === 'pendientes' ? !m.leido : m.leido) ) as m (m.id)}
-				<div class="border border-gray-200 rounded-2xl p-5">
+				<div class="border border-gray-200 dark:border-gray-700 rounded-2xl p-5 bg-white dark:bg-gray-800">
 					<div class="flex items-start justify-between gap-4">
 						<div>
 							<div class="flex items-center gap-2 mb-1">
-								<span class="font-medium text-gray-900">{m.nombre}</span>
-								<span class="text-xs text-gray-400"
+								<span class="font-medium text-gray-900 dark:text-white">{m.nombre}</span>
+								<span class="text-xs text-gray-400 dark:text-gray-500"
 									>{new Date(m.created_at).toLocaleDateString()}</span
 								>
 							</div>
-							<p class="text-xs text-blue-500 mb-2">{m.email}</p>
-							<p class="text-sm text-gray-600">{m.mensaje}</p>
+							<p class="text-xs text-blue-500 dark:text-blue-400 mb-2">{m.email}</p>
+							<p class="text-sm text-gray-600 dark:text-gray-300">{m.mensaje}</p>
 						</div>
 						<div class="flex gap-2 shrink-0">
 							{#if !m.leido}
 								<button
 									onclick={() => marcarLeido(m.id)}
-									class="bg-green-100 text-green-600 px-3 py-1.5 rounded-xl text-xs hover:bg-green-200 transition-colors"
+									class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-xl text-xs hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
 								>
 									Marcar leído
 								</button>
 							{/if}
 							<button
 								onclick={() => eliminarMensaje(m.id)}
-								class="bg-red-100 text-red-500 px-3 py-1.5 rounded-xl text-xs hover:bg-red-200 transition-colors"
+								class="bg-red-100 dark:bg-red-900/30 text-red-500 dark:text-red-400 px-3 py-1.5 rounded-xl text-xs hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
 							>
 								Eliminar
 							</button>

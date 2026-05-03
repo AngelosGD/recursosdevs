@@ -3,7 +3,14 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { page } from '$app/state';
+	import { theme } from '$lib/theme.js';
+	import { onMount } from 'svelte';
+
 	let { children, data } = $props();
+
+	onMount(() => {
+		theme.init();
+	});
 </script>
 
 <div class="particulas">
@@ -28,11 +35,11 @@
 	{#if page.url.pathname === '/login'}
 		{@render children()}
 	{:else if page.url.pathname.startsWith('/admin')}
-		<main class="max-w-6xl mx-auto px-6 py-10">
+		<main class="max-w-6xl mx-auto px-6 py-10 min-h-[calc(100vh-200px)]">
 			{@render children()}
 		</main>
 	{:else}
-		<main class="max-w-6xl mx-auto px-6 py-10">
+		<main class="max-w-6xl mx-auto px-6 py-10 min-h-[calc(100vh-200px)]">
 			{@render children()}
 		</main>
 		<Footer />
