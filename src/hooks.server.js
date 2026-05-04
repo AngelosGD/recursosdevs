@@ -8,7 +8,14 @@ export const handle = sequence(async ({ event, resolve }) => {
 			getAll: () => event.cookies.getAll(),
 			setAll: (cookiesToSet) => {
 				cookiesToSet.forEach(({ name, value, options }) => {
-					event.cookies.set(name, value, { ...options, path: '/', sameSite: 'lax', secure: true });
+					const secure = event.request.url.startsWith('https://');
+					event.cookies.set(name, value, {
+						...options,
+						path: '/',
+						sameSite: 'lax',
+						secure,
+						httpOnly: false
+					});
 				});
 			}
 		}
@@ -34,6 +41,20 @@ export const handle = sequence(async ({ event, resolve }) => {
 			console.error('Error getting user:', error);
 		}
 		return user;
+	};
+
+	event.locals.isAdmin = () => {
+		return event.cookies.get('is_admin') === 'true';
+	};
+
+	event.locals.setAdminCookie = (value) => {
+		const secure = event.request.url.startsWith('https://');
+		event.cookies.set('is_admin', value ? 'true' : 'false', {
+			path: '/',
+			sameSite: 'lax',
+			secure,
+			maxAge: 60 * 60 * 24 * 7
+		});
 	};
 
 	return resolve(event, {
