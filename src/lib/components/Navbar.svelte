@@ -37,6 +37,9 @@
 		<a href="/contacto" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg">Contacto</a>
 		<ThemeToggle />
 		{#if session}
+			<a href="/admin" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+				Admin
+			</a>
 			<span class="text-sm text-gray-500 dark:text-gray-400 hidden xl:inline">{session.user.email}</span>
 			<button onclick={logout} class="text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">
 				Cerrar sesión
@@ -62,6 +65,9 @@
 			<ThemeToggle />
 		</div>
 		{#if session}
+			<a href="/admin" onclick={cerrarMenu} class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 py-2">
+				Panel Admin
+			</a>
 			<span class="text-sm text-gray-500 dark:text-gray-400 py-2">{session.user.email}</span>
 			<button onclick={logout} class="text-sm text-red-500 hover:text-red-600 py-2 text-left">
 				Cerrar sesión
