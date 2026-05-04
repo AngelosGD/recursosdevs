@@ -4,21 +4,22 @@ import { redirect } from '@sveltejs/kit';
 const AD_EMAIL = ADMIN_EMAIL;
 
 export const load = async ({ locals: { supabase } }) => {
-	const { data: { session }, error } = await supabase.auth.getSession();
-
-	if (error) {
-		console.error('Admin - Error getting session:', error.message);
-	}
-
-	if (!session) {
-		console.log('Admin - No session, redirecting to login');
+	if (!AD_EMAIL) {
+		console.error('ADMIN_EMAIL no está configurado en el servidor');
 		throw redirect(303, '/login');
 	}
 
-	if (session.user.email !== AD_EMAIL) {
-		console.log('Admin - Email mismatch:', session.user.email, '!=', AD_EMAIL);
+	const { data: { user }, error } = await supabase.auth.getUser();
+
+	if (error || !user) {
+		throw redirect(303, '/login');
+	}
+
+	if (user.email !== AD_EMAIL) {
 		throw redirect(303, '/');
 	}
+
+	const { data: { session } } = await supabase.auth.getSession();
 
 	return { session };
 };

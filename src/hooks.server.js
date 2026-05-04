@@ -8,7 +8,7 @@ export const handle = sequence(async ({ event, resolve }) => {
 			getAll: () => event.cookies.getAll(),
 			setAll: (cookiesToSet) => {
 				cookiesToSet.forEach(({ name, value, options }) => {
-					event.cookies.set(name, value, { ...options, path: '/' });
+					event.cookies.set(name, value, { ...options, path: '/', sameSite: 'lax', secure: true });
 				});
 			}
 		}
@@ -23,6 +23,17 @@ export const handle = sequence(async ({ event, resolve }) => {
 			console.error('Error getting session:', error);
 		}
 		return session;
+	};
+
+	event.locals.getUser = async () => {
+		const {
+			data: { user },
+			error
+		} = await event.locals.supabase.auth.getUser();
+		if (error) {
+			console.error('Error getting user:', error);
+		}
+		return user;
 	};
 
 	return resolve(event, {
