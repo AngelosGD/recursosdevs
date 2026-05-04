@@ -111,6 +111,18 @@
 
 			<div>
 				<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+					>URL de imagen (opcional)</label
+				>
+				<input
+					bind:value={image_url}
+					type="url"
+					placeholder="https://ejemplo.com/imagen.jpg"
+					class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 dark:focus:border-blue-500 bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+				/>
+			</div>
+
+			<div>
+				<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
 					>Categorías (separadas por coma)</label
 				>
 				<input
