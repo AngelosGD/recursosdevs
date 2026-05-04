@@ -1,6 +1,5 @@
 <script>
 	import { supabase } from '$lib/supabase.js';
-	import { SvelteURL } from 'svelte/reactivity';
 
 	let { data } = $props();
 
@@ -23,6 +22,9 @@
 	let agregando = $state(false);
 	let cargando = $state(false);
 
+	let editandoId = $state(null);
+	let editandoDatos = $state(null);
+
 	let recursosMostrados = $derived(() => {
 		const lista = vista === 'pendientes' ? pendientes : todos;
 		if (!busqueda) return lista;
@@ -31,7 +33,6 @@
 
 	async function aprobar(id) {
 		await supabase.from('recursos').update({ aprobado: true }).eq('id', id);
-		const r = pendientes.find((r) => r.id === id);
 		pendientes = pendientes.filter((r) => r.id !== id);
 		todos = todos.map((r) => (r.id === id ? { ...r, aprobado: true } : r));
 	}
@@ -74,6 +75,86 @@
 		categorias = '';
 		agregando = false;
 	}
+
+	function iniciarEdicion(recurso) {
+		editandoId = recurso.id;
+		editandoDatos = {
+			titulo: recurso.titulo,
+			descripcion: recurso.descripcion,
+			url: recurso.url,
+			image_url: recurso.image_url || '',
+			tipo: recurso.tipo,
+			nivel: recurso.nivel,
+			idioma: recurso.idioma,
+			categorias: recurso.categorias.join(', ')
+		};
+	}
+
+	async function guardarEdicion() {
+		if (!editandoId || !editandoDatos) return;
+		cargando = true;
+
+		const { error } = await supabase
+			.from('recursos')
+			.update({
+				titulo: editandoDatos.titulo,
+				descripcion: editandoDatos.descripcion,
+				url: editandoDatos.url,
+				image_url: editandoDatos.image_url,
+				tipo: editandoDatos.tipo,
+				nivel: editandoDatos.nivel,
+				idioma: editandoDatos.idioma,
+				categorias: editandoDatos.categorias.split(',').map((c) => c.trim())
+			})
+			.eq('id', editandoId);
+
+		cargando = false;
+		if (error) {
+			console.error(error);
+			return;
+		}
+
+		todos = todos.map((r) =>
+			r.id === editandoId
+				? {
+						...r,
+						titulo: editandoDatos.titulo,
+						descripcion: editandoDatos.descripcion,
+						url: editandoDatos.url,
+						image_url: editandoDatos.image_url,
+						tipo: editandoDatos.tipo,
+						nivel: editandoDatos.nivel,
+						idioma: editandoDatos.idioma,
+						categorias: editandoDatos.categorias.split(',').map((c) => c.trim())
+					}
+				: r
+		);
+
+		pendientes = pendientes.map((r) =>
+			r.id === editandoId
+				? {
+						...r,
+						titulo: editandoDatos.titulo,
+						descripcion: editandoDatos.descripcion,
+						url: editandoDatos.url,
+						image_url: editandoDatos.image_url,
+						tipo: editandoDatos.tipo,
+						nivel: editandoDatos.nivel,
+						idioma: editandoDatos.idioma,
+						categorias: editandoDatos.categorias.split(',').map((c) => c.trim())
+					}
+				: r
+		);
+
+		editandoId = null;
+		editandoDatos = null;
+	}
+
+	function cancelarEdicion() {
+		editandoId = null;
+		editandoDatos = null;
+	}
+
 	async function marcarLeido(id) {
 		await supabase.from('contacto').update({ leido: true }).eq('id', id);
 		mensajes = mensajes.map((m) => (m.id === id ? { ...m, leido: true } : m));
@@ -112,7 +193,78 @@
 </div>
 
 <!-- Formulario agregar -->
-{#if agregando}
+{#if editandoId && editandoDatos}
+	<div class="border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-4 sm:p-6 mb-8 flex flex-col gap-4">
+		<div class="flex items-center justify-between">
+			<h2 class="font-bold text-gray-900 dark:text-white">Editar recurso</h2>
+			<button
+				onclick={cancelarEdicion}
+				class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+			>
+				✕ Cancelar
+			</button>
+		</div>
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+			<input
+				bind:value={editandoDatos.titulo}
+				placeholder="Título"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-purple-400"
+			/>
+			<input
+				bind:value={editandoDatos.url}
+				placeholder="URL"
+				type="url"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-purple-400"
+			/>
+			<input
+				bind:value={editandoDatos.image_url}
+				placeholder="URL imagen"
+				type="url"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-purple-400"
+			/>
+			<input
+				bind:value={editandoDatos.categorias}
+				placeholder="Categorías separadas por coma"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-purple-400"
+			/>
+		</div>
+		<textarea
+			bind:value={editandoDatos.descripcion}
+			placeholder="Descripción"
+			rows="2"
+			class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-purple-400"
+		></textarea>
+		<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+			<select
+				bind:value={editandoDatos.tipo}
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white"
+			>
+				<option>Pagina</option><option>Gratis</option><option>De pago</option>
+				<option>Herramienta</option><option>Descargable</option>
+			</select>
+			<select
+				bind:value={editandoDatos.nivel}
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white"
+			>
+				<option>Principiante</option><option>Intermedio</option>
+				<option>Avanzado</option><option>Variado</option>
+			</select>
+			<select
+				bind:value={editandoDatos.idioma}
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white"
+			>
+				<option>Español</option><option>Inglés</option><option>Variado</option>
+			</select>
+		</div>
+		<button
+			onclick={guardarEdicion}
+			disabled={cargando}
+			class="bg-purple-600 dark:bg-purple-500 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors disabled:opacity-50"
+		>
+			{cargando ? 'Guardando...' : 'Guardar cambios'}
+		</button>
+	</div>
+{:else if agregando}
 	<div class="border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 sm:p-6 mb-8 flex flex-col gap-4">
 		<h2 class="font-bold text-gray-900 dark:text-white">Agregar recurso</h2>
 		<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -209,8 +361,8 @@
 	<div class="flex flex-col gap-3">
 		{#each recursosMostrados() as recurso (recurso.id)}
 			<div class="border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex items-start justify-between gap-4 bg-white dark:bg-gray-800">
-				<div>
-					<div class="flex items-center gap-2 mb-1">
+				<div class="flex-1 min-w-0">
+					<div class="flex items-center gap-2 mb-1 flex-wrap">
 						<span class="font-bold text-gray-900 dark:text-white">{recurso.titulo}</span>
 						<span class="text-xs text-gray-400 dark:text-gray-500">{recurso.tipo} · {recurso.nivel}</span>
 						{#if recurso.aprobado}
@@ -223,27 +375,35 @@
 							>
 						{/if}
 					</div>
-					<p class="text-sm text-gray-500 dark:text-gray-400 mb-1">{recurso.descripcion}</p>
-					<a href={recurso.url} target="_blank" class="text-xs text-blue-500 dark:text-blue-400 hover:underline"
+					<p class="text-sm text-gray-500 dark:text-gray-400 mb-1 truncate">{recurso.descripcion}</p>
+					<a href={recurso.url} target="_blank" class="text-xs text-blue-500 dark:text-blue-400 hover:underline block truncate"
 						>{recurso.url}</a
 					>
 				</div>
-				{#if !recurso.aprobado}
-					<div class="flex gap-2 shrink-0">
-						<button
-							onclick={() => aprobar(recurso.id)}
-							class="bg-green-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-green-600 transition-colors"
-						>
-							Aprobar
-						</button>
-						<button
-							onclick={() => rechazar(recurso.id)}
-							class="bg-red-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-red-600 transition-colors"
-						>
-							Rechazar
-						</button>
-					</div>
-				{/if}
+				<div class="flex flex-col gap-2 shrink-0">
+					<button
+						onclick={() => iniciarEdicion(recurso)}
+						class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+					>
+						Editar
+					</button>
+					{#if !recurso.aprobado}
+						<div class="flex gap-1">
+							<button
+								onclick={() => aprobar(recurso.id)}
+								class="bg-green-500 text-white px-2 py-1 rounded-lg text-xs hover:bg-green-600 transition-colors"
+							>
+								✓
+							</button>
+							<button
+								onclick={() => rechazar(recurso.id)}
+								class="bg-red-500 text-white px-2 py-1 rounded-lg text-xs hover:bg-red-600 transition-colors"
+							>
+								✕
+							</button>
+						</div>
+					{/if}
+				</div>
 			</div>
 		{/each}
 	</div>
