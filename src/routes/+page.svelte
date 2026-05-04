@@ -72,28 +72,39 @@
 			<div class="flex-1 w-full">
 				{#each recientes as r, i (r.id)}
 					{#if i === carruselActivo}
-						<div class="bg-white rounded-2xl p-4 sm:p-5 text-gray-900 shadow-xl">
-							<div class="flex items-center gap-2 mb-3 flex-wrap">
-								{#each r.categorias as cat (cat)}
-									<span
-										class="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 px-2 py-0.5 rounded-full font-medium"
-										>{cat}</span
+						<div class="bg-white rounded-2xl p-4 sm:p-5 text-gray-900 shadow-xl flex flex-col sm:flex-row gap-4">
+							{#if r.image_url}
+								<div class="sm:w-32 sm:shrink-0">
+									<img
+										src={r.image_url}
+										alt={r.titulo}
+										class="w-full h-32 sm:h-full sm:min-h-[140px] object-cover rounded-xl"
+									/>
+								</div>
+							{/if}
+							<div class="flex-1">
+								<div class="flex items-center gap-2 mb-3 flex-wrap">
+									{#each r.categorias as cat (cat)}
+										<span
+											class="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 px-2 py-0.5 rounded-full font-medium"
+											>{cat}</span
+										>
+									{/each}
+									<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full ml-auto"
+										>{r.nivel}</span
 									>
-								{/each}
-								<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full ml-auto"
-									>{r.nivel}</span
+								</div>
+								<h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-900 mb-1">{r.titulo}</h3>
+								<p class="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">{r.descripcion}</p>
+								<a
+									href={r.url}
+									target="_blank"
+									class="group inline-flex items-center gap-2 bg-blue-600 text-white text-sm font-bold px-4 sm:px-5 py-2 rounded-xl transition-all duration-300 hover:bg-blue-700 hover:scale-105 hover:shadow-lg active:scale-95"
 								>
+									Ver recurso
+									<span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+								</a>
 							</div>
-							<h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-900 mb-1">{r.titulo}</h3>
-							<p class="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">{r.descripcion}</p>
-							<a
-								href={r.url}
-								target="_blank"
-								class="group inline-flex items-center gap-2 bg-blue-600 text-white text-sm font-bold px-4 sm:px-5 py-2 rounded-xl transition-all duration-300 hover:bg-blue-700 hover:scale-105 hover:shadow-lg active:scale-95"
-							>
-								Ver recurso
-								<span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
-							</a>
 						</div>
 					{/if}
 				{/each}

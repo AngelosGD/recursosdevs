@@ -35,6 +35,10 @@
 	<div class="hidden lg:flex items-center gap-4 xl:gap-6 text-gray-600 dark:text-gray-300">
 		<a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg">Recursos</a>
 		<a href="/contacto" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg">Contacto</a>
+		<span class="relative inline-flex items-center text-base xl:text-lg text-gray-400 dark:text-gray-500">
+			Cursos
+			<span class="ml-1.5 text-[10px] bg-yellow-400 text-yellow-900 px-1.5 py-0.5 rounded font-bold">Soon</span>
+		</span>
 		<ThemeToggle />
 		{#if session}
 			<a href="/admin" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
@@ -60,6 +64,10 @@
 	<div class="lg:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-4 flex flex-col gap-4">
 		<a href="/" onclick={cerrarMenu} class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2">Recursos</a>
 		<a href="/contacto" onclick={cerrarMenu} class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2">Contacto</a>
+		<span class="flex items-center gap-2 py-2 text-gray-400 dark:text-gray-500">
+			Cursos
+			<span class="text-[10px] bg-yellow-400 text-yellow-900 px-1.5 py-0.5 rounded font-bold">Soon</span>
+		</span>
 		<div class="flex items-center gap-4 py-2">
 			<span class="text-sm text-gray-500 dark:text-gray-400">Tema:</span>
 			<ThemeToggle />

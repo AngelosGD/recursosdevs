@@ -164,7 +164,7 @@
 				bind:value={idioma}
 				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white"
 			>
-				<option>Español</option><option>Inglés</option>
+				<option>Español</option><option>Inglés</option><option>Variado</option>
 			</select>
 		</div>
 		<button

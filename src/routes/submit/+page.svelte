@@ -172,6 +172,7 @@
 					>
 						<option>Español</option>
 						<option>Inglés</option>
+						<option>Variado</option>
 					</select>
 				</div>
 			</div>
