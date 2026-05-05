@@ -1,17 +1,17 @@
 <script>
 	import RecursoCard from '$lib/components/cardResource.svelte';
-	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	let { data } = $props();
-	let recursos = data.recursos;
-	let recientes = data.recientes;
-	let pagination = data.pagination;
-	let session = data.session;
+	let recursos = $derived(data.recursos);
+	let recientes = $derived(data.recientes);
+	let pagination = $derived(data.pagination);
+	let session = $derived(data.session);
 
 	let categoriaActiva = $state('Todos');
 	let busqueda = $state('');
 
-	const todasCategorias = ['Todos', ...new Set(recursos.flatMap((r) => r.categorias))];
+	const todasCategorias = $derived(['Todos', ...new Set(recursos.flatMap((r) => r.categorias))]);
 
 	let recursosFiltrados = $derived(
 		(() => {
@@ -34,12 +34,8 @@
 
 	let carruselActivo = $state(0);
 
-	function siguiente() {
-		carruselActivo = (carruselActivo + 1) % recientes.length;
-	}
-
-	function anterior() {
-		carruselActivo = (carruselActivo - 1 + recientes.length) % recientes.length;
+	function irPagina(nuevaPagina) {
+		goto(`?page=${nuevaPagina}`, { keepFocus: true });
 	}
 </script>
 
@@ -166,36 +162,36 @@
 {#if pagination.totalPages > 1}
 	<div class="flex items-center justify-center gap-2 mt-12 mb-20 px-4">
 		{#if pagination.page > 1}
-			<a
-				href="?page={pagination.page - 1}"
+			<button
+				onclick={() => irPagina(pagination.page - 1)}
 				class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
 			>
 				← Anterior
-			</a>
+			</button>
 		{/if}
 
 		<div class="flex gap-1">
 			{#each Array(pagination.totalPages) as _, i}
 				{@const pageNum = i + 1}
-				<a
-					href="?page={pageNum}"
+				<button
+					onclick={() => irPagina(pageNum)}
 					class="w-10 h-10 flex items-center justify-center rounded-lg transition-colors {pageNum ===
 					pagination.page
 						? 'bg-blue-600 text-white'
 						: 'border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 				>
 					{pageNum}
-				</a>
+				</button>
 			{/each}
 		</div>
 
 		{#if pagination.page < pagination.totalPages}
-			<a
-				href="?page={pagination.page + 1}"
+			<button
+				onclick={() => irPagina(pagination.page + 1)}
 				class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
 			>
 				Siguiente →
-			</a>
+			</button>
 		{/if}
 	</div>
 {/if}

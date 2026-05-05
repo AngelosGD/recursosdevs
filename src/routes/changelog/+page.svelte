@@ -3,6 +3,18 @@
 
 	const cambios = [
 		{
+			fecha: '2026-05-05',
+			titulo: 'Paginación corregida',
+			imagen: 'https://i.imgur.com/paginacion-corregida.png',
+			descripcion: 'La paginación de recursos ahora funciona correctamente al cambiar de página.',
+			porQue: 'La navegación entre páginas no estaba recargando los datos correctamente.',
+			detalles: [
+				'Cambiado de enlaces <a> a botones con función goto',
+				'Mantiene el focus después de cambiar de página',
+				'Los datos se cargan correctamente en cada página'
+			]
+		},
+		{
 			fecha: '2026-05-04',
 			titulo: 'Sistema de favoritos y reportes',
 			imagen: 'https://i.imgur.com/favoritos-reportes.png',
