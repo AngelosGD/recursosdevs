@@ -15,7 +15,9 @@
 	}
 </script>
 
-<nav class="flex items-center justify-between px-4 sm:px-8 py-4 border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+<nav
+	class="flex items-center justify-between px-4 sm:px-8 py-4 border-b border-gray-200 dark:border-gray-800 transition-colors duration-300"
+>
 	<a href="/" class="font-bold text-xl sm:text-2xl text-blue-600 dark:text-blue-400">devRekursos</a>
 
 	<button
@@ -25,28 +27,69 @@
 	>
 		<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			{#if menuAbierto}
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M6 18L18 6M6 6l12 12"
+				/>
 			{:else}
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M4 6h16M4 12h16M4 18h16"
+				/>
 			{/if}
 		</svg>
 	</button>
 
 	<div class="hidden lg:flex items-center gap-4 xl:gap-6 text-gray-600 dark:text-gray-300">
-		<a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg">Recursos</a>
-		<a href="/contacto" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg">Contacto</a>
-		<a href="/cursos" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg">Cursos</a>
+		<a
+			href="/"
+			class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg"
+			>Recursos</a
+		>
+		<a
+			href="/contacto"
+			class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg"
+			>Contacto</a
+		>
+		<a
+			href="/cursos"
+			class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg"
+			>Cursos</a
+		>
+		{#if session}
+			<a
+				href="/favoritos"
+				class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg"
+				>Favoritos</a
+			>
+		{/if}
 		<ThemeToggle />
 		{#if session}
-			<a href="/admin" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+			<a
+				href="/admin"
+				class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+			>
 				Admin
 			</a>
-			<span class="text-sm text-gray-500 dark:text-gray-400 hidden xl:inline">{session.user.email}</span>
-			<button onclick={logout} class="text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">
+			<span class="text-sm text-gray-500 dark:text-gray-400 hidden xl:inline"
+				>{session.user.email}</span
+			>
+			<button
+				onclick={logout}
+				class="text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+			>
 				Cerrar sesión
 			</button>
 		{:else}
-			<a href="/login" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg">Entrar</a>
+			<a
+				href="/login"
+				class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-base xl:text-lg"
+				>Entrar</a
+			>
 		{/if}
 		<a
 			href="/submit"
@@ -58,16 +101,45 @@
 </nav>
 
 {#if menuAbierto}
-	<div class="lg:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-4 flex flex-col gap-4">
-		<a href="/" onclick={cerrarMenu} class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2">Recursos</a>
-		<a href="/contacto" onclick={cerrarMenu} class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2">Contacto</a>
-		<a href="/cursos" onclick={cerrarMenu} class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2">Cursos</a>
+	<div
+		class="lg:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-4 flex flex-col gap-4"
+	>
+		<a
+			href="/"
+			onclick={cerrarMenu}
+			class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2"
+			>Recursos</a
+		>
+		<a
+			href="/contacto"
+			onclick={cerrarMenu}
+			class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2"
+			>Contacto</a
+		>
+		<a
+			href="/cursos"
+			onclick={cerrarMenu}
+			class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2"
+			>Cursos</a
+		>
+		{#if session}
+			<a
+				href="/favoritos"
+				onclick={cerrarMenu}
+				class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2"
+				>Favoritos</a
+			>
+		{/if}
 		<div class="flex items-center gap-4 py-2">
 			<span class="text-sm text-gray-500 dark:text-gray-400">Tema:</span>
 			<ThemeToggle />
 		</div>
 		{#if session}
-			<a href="/admin" onclick={cerrarMenu} class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 py-2">
+			<a
+				href="/admin"
+				onclick={cerrarMenu}
+				class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 py-2"
+			>
 				Panel Admin
 			</a>
 			<span class="text-sm text-gray-500 dark:text-gray-400 py-2">{session.user.email}</span>
@@ -75,7 +147,12 @@
 				Cerrar sesión
 			</button>
 		{:else}
-			<a href="/login" onclick={cerrarMenu} class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2">Entrar</a>
+			<a
+				href="/login"
+				onclick={cerrarMenu}
+				class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 py-2"
+				>Entrar</a
+			>
 		{/if}
 		<a
 			href="/submit"

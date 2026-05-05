@@ -18,7 +18,9 @@
 <button
 	onclick={toggle}
 	class="relative w-14 h-8 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-	style="background: {isDark ? 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)' : 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)'}"
+	style="background: {isDark
+		? 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)'
+		: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)'}"
 	aria-label="Cambiar tema"
 >
 	<span

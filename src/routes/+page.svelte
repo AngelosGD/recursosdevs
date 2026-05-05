@@ -1,14 +1,15 @@
 <script>
 	import RecursoCard from '$lib/components/cardResource.svelte';
+	import { page } from '$app/state';
 
 	let { data } = $props();
 	let recursos = data.recursos;
 	let recientes = data.recientes;
+	let pagination = data.pagination;
+	let session = data.session;
 
 	let categoriaActiva = $state('Todos');
 	let busqueda = $state('');
-
-	
 
 	const todasCategorias = ['Todos', ...new Set(recursos.flatMap((r) => r.categorias))];
 
@@ -54,9 +55,7 @@
 </section>
 
 <section class="mb-8 sm:mb-14 px-4">
-	<div
-		class="bg-blue-600 rounded-2xl p-4 sm:p-8 text-white relative overflow-hidden"
-	>
+	<div class="bg-blue-600 rounded-2xl p-4 sm:p-8 text-white relative overflow-hidden">
 		<div class="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full"></div>
 		<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full"></div>
 
@@ -72,7 +71,9 @@
 			<div class="flex-1 w-full">
 				{#each recientes as r, i (r.id)}
 					{#if i === carruselActivo}
-						<div class="bg-white rounded-2xl p-4 sm:p-5 text-gray-900 shadow-xl flex flex-col sm:flex-row gap-4">
+						<div
+							class="bg-white rounded-2xl p-4 sm:p-5 text-gray-900 shadow-xl flex flex-col sm:flex-row gap-4"
+						>
 							{#if r.image_url}
 								<div class="sm:w-32 sm:shrink-0">
 									<img
@@ -90,12 +91,17 @@
 											>{cat}</span
 										>
 									{/each}
-									<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full ml-auto"
+									<span
+										class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full ml-auto"
 										>{r.nivel}</span
 									>
 								</div>
-								<h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-900 mb-1">{r.titulo}</h3>
-								<p class="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">{r.descripcion}</p>
+								<h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-900 mb-1">
+									{r.titulo}
+								</h3>
+								<p class="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">
+									{r.descripcion}
+								</p>
 								<a
 									href={r.url}
 									target="_blank"
@@ -150,10 +156,46 @@
 </div>
 
 <!-- Grid recursos -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 mb-20">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4">
 	{#each recursosFiltrados as recurso (recurso.id)}
-		<RecursoCard {...recurso} />
+		<RecursoCard {...recurso} {session} />
 	{/each}
 </div>
 
+<!-- Paginación -->
+{#if pagination.totalPages > 1}
+	<div class="flex items-center justify-center gap-2 mt-12 mb-20 px-4">
+		{#if pagination.page > 1}
+			<a
+				href="?page={pagination.page - 1}"
+				class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+			>
+				← Anterior
+			</a>
+		{/if}
 
+		<div class="flex gap-1">
+			{#each Array(pagination.totalPages) as _, i}
+				{@const pageNum = i + 1}
+				<a
+					href="?page={pageNum}"
+					class="w-10 h-10 flex items-center justify-center rounded-lg transition-colors {pageNum ===
+					pagination.page
+						? 'bg-blue-600 text-white'
+						: 'border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}"
+				>
+					{pageNum}
+				</a>
+			{/each}
+		</div>
+
+		{#if pagination.page < pagination.totalPages}
+			<a
+				href="?page={pagination.page + 1}"
+				class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+			>
+				Siguiente →
+			</a>
+		{/if}
+	</div>
+{/if}

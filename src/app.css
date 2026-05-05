@@ -33,7 +33,9 @@ body {
 	position: relative;
 	min-height: 100vh;
 	color: var(--text-primary);
-	transition: background-color 0.3s ease, color 0.3s ease;
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
 }
 
 @keyframes blob {
@@ -112,7 +114,9 @@ body {
 }
 html {
 	background: var(--bg-primary);
-	transition: background-color 0.3s ease, color 0.3s ease;
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
 }
 
 body {
@@ -120,11 +124,15 @@ body {
 	position: relative;
 	min-height: 100vh;
 	color: var(--text-primary);
-	transition: background-color 0.3s ease, color 0.3s ease;
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
 }
 
 .particula {
 	color: var(--accent);
 	opacity: 0;
-	transition: color 0.3s ease, opacity 0.3s ease;
+	transition:
+		color 0.3s ease,
+		opacity 0.3s ease;
 }

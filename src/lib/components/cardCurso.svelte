@@ -1,21 +1,9 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import ResourceActions from './resourceActions.svelte';
-	import ReportResource from './reportResource.svelte';
+	import CursoActions from './cursoActions.svelte';
 
-	let {
-		titulo,
-		descripcion,
-		categorias,
-		url,
-		tipo,
-		nivel,
-		image_url,
-		idioma,
-		autor_nombre,
-		id,
-		session
-	} = $props();
+	let { titulo, descripcion, categorias, url, precio, instructor, nivel, imagen, session, id } =
+		$props();
 
 	const nivelColor = {
 		Principiante: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
@@ -24,18 +12,8 @@
 		Variado: 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
 	};
 
-	const tipoColor = {
-		Gratis: 'text-green-600 dark:text-green-400',
-		'De pago': 'text-gray-400',
-		Pagina: 'text-purple-600 dark:text-purple-400',
-		Descargable: 'text-blue-500 dark:text-blue-400'
-	};
-
-	function handleClick(e) {
-		if (e.target.closest('button') || e.target.closest('.no-link')) {
-			e.preventDefault();
-		}
-	}
+	const precioColor =
+		precio === 'Gratis' ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400';
 </script>
 
 <div
@@ -43,8 +21,8 @@
 >
 	<a href={url} target="_blank" class="block">
 		<div class="h-40 overflow-hidden bg-gray-100 dark:bg-gray-700">
-			{#if image_url}
-				<img src={image_url} alt={titulo} class="w-full h-full object-cover" />
+			{#if imagen}
+				<img src={imagen} alt={titulo} class="w-full h-full object-cover" />
 			{:else}
 				<div
 					class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500"
@@ -54,7 +32,7 @@
 							stroke-linecap="round"
 							stroke-linejoin="round"
 							stroke-width="2"
-							d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+							d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
 						></path>
 					</svg>
 				</div>
@@ -73,34 +51,30 @@
 			</div>
 
 			<h2 class="font-bold text-gray-900 dark:text-white text-lg mb-1">{titulo}</h2>
-			<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">{descripcion}</p>
+
+			{#if instructor}
+				<p class="text-sm text-purple-500 dark:text-purple-400 mb-2">Por {instructor}</p>
+			{/if}
+
+			<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 leading-relaxed line-clamp-2">
+				{descripcion}
+			</p>
 
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-2">
-					<span class="text-xs font-medium {tipoColor[tipo] ?? 'text-gray-400'}">{tipo}</span>
+					<span class="text-xs font-medium {precioColor}">{precio}</span>
 					<span class="text-gray-300 dark:text-gray-600">·</span>
 					<span
 						class="text-xs font-medium px-2 py-0.5 rounded-full {nivelColor[nivel] ??
 							'bg-gray-100 dark:bg-gray-700 dark:text-gray-300 text-gray-600'}">{nivel}</span
 					>
 				</div>
-				<span class="text-sm text-blue-600 dark:text-blue-400 font-medium">Visitar recurso →</span>
+				<span class="text-sm text-blue-600 dark:text-blue-400 font-medium">Ver curso →</span>
 			</div>
-
-			{#if autor_nombre}
-				<div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-					<p class="text-xs text-gray-400 dark:text-gray-500">
-						Sugerido por <span class="text-blue-500 dark:text-blue-400 font-medium"
-							>{autor_nombre}</span
-						>
-					</p>
-				</div>
-			{/if}
 		</div>
 	</a>
 
 	<div class="flex items-center gap-2 px-5 pb-5 pt-0">
-		<ResourceActions recursoId={id} {session} />
-		<ReportResource recursoId={id} recursoTitulo={titulo} />
+		<CursoActions cursoId={id} {session} />
 	</div>
 </div>

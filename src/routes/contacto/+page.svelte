@@ -17,13 +17,19 @@
 
 <section class="max-w-lg mx-auto py-8 sm:py-14 px-4">
 	<h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Contacto</h1>
-	<p class="text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">¿Encontraste un fallo? Cuéntanos y lo resolvemos.</p>
+	<p class="text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">
+		¿Encontraste un fallo? Cuéntanos y lo resolvemos.
+	</p>
 
 	{#if enviado}
-		<div class="text-center py-10 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800">
+		<div
+			class="text-center py-10 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800"
+		>
 			<p class="text-4xl mb-3">📬</p>
 			<p class="font-semibold text-gray-900 dark:text-white">Mensaje enviado, gracias.</p>
-			<a href="/" class="text-blue-600 dark:text-blue-400 text-sm mt-4 inline-block hover:underline">Volver al inicio</a>
+			<a href="/" class="text-blue-600 dark:text-blue-400 text-sm mt-4 inline-block hover:underline"
+				>Volver al inicio</a
+			>
 		</div>
 	{:else}
 		<div class="flex flex-col gap-4">

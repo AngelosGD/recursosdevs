@@ -8,24 +8,17 @@ export async function load({ url, parent }) {
 	const from = (page - 1) * perPage;
 	const to = from + perPage - 1;
 
-	const [{ data: recursos, count }, { data: recientes }] = await Promise.all([
+	const [{ data: cursos, count }] = await Promise.all([
 		supabase
-			.from('recursos')
+			.from('cursos')
 			.select('*', { count: 'exact' })
 			.eq('aprobado', true)
 			.order('created_at', { ascending: false })
-			.range(from, to),
-		supabase
-			.from('recursos')
-			.select('*')
-			.eq('aprobado', true)
-			.order('created_at', { ascending: false })
-			.limit(3)
+			.range(from, to)
 	]);
 
 	return {
-		recursos: recursos ?? [],
-		recientes: recientes ?? [],
+		cursos: cursos ?? [],
 		pagination: {
 			page,
 			perPage,

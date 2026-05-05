@@ -117,9 +117,13 @@
 			</p>
 		</div>
 
-		<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-10 border border-white/50 dark:border-gray-700/50">
+		<div
+			class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-10 border border-white/50 dark:border-gray-700/50"
+		>
 			{#if error}
-				<div class="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 rounded-lg animate-in fade-in">
+				<div
+					class="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 rounded-lg animate-in fade-in"
+				>
 					<p class="text-red-700 dark:text-red-400 text-sm font-medium flex items-center gap-2">
 						<span class="text-lg">⚠️</span>
 						{error}
@@ -128,7 +132,9 @@
 			{/if}
 
 			{#if success}
-				<div class="mb-6 p-4 bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500 rounded-lg animate-in fade-in">
+				<div
+					class="mb-6 p-4 bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500 rounded-lg animate-in fade-in"
+				>
 					<p class="text-green-700 dark:text-green-400 text-sm font-medium flex items-center gap-2">
 						<span class="text-lg">✓</span>
 						{success}
@@ -138,7 +144,10 @@
 
 			<form onsubmit={handleSubmit} class="space-y-5">
 				<div>
-					<label for="email" class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Email</label>
+					<label
+						for="email"
+						class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Email</label
+					>
 					<div class="relative">
 						<input
 							id="email"
@@ -158,7 +167,9 @@
 				</div>
 
 				<div>
-					<label for="password" class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2"
+					<label
+						for="password"
+						class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2"
 						>Contraseña</label
 					>
 					<div class="relative">
@@ -181,14 +192,19 @@
 							{showPassword ? '👁️' : '👁️‍🗨️'}
 						</button>
 						{#if passwordError}
-							<p class="mt-1 text-red-500 dark:text-red-400 text-xs font-medium">× {passwordError}</p>
+							<p class="mt-1 text-red-500 dark:text-red-400 text-xs font-medium">
+								× {passwordError}
+							</p>
 						{/if}
 					</div>
 				</div>
 
 				{#if modo === 'register'}
 					<div>
-						<label for="passwordConfirm" class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
+						<label
+							for="passwordConfirm"
+							class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2"
+						>
 							Confirmar Contraseña
 						</label>
 						<div class="relative">
@@ -264,9 +280,13 @@
 
 		<p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-6 sm:mt-8">
 			Al continuar, aceptas nuestros
-			<a href="/terminos" class="text-blue-600 dark:text-blue-400 hover:underline">Términos de Servicio</a>
+			<a href="/terminos" class="text-blue-600 dark:text-blue-400 hover:underline"
+				>Términos de Servicio</a
+			>
 			y
-			<a href="/privacidad" class="text-blue-600 dark:text-blue-400 hover:underline">Política de Privacidad</a>
+			<a href="/privacidad" class="text-blue-600 dark:text-blue-400 hover:underline"
+				>Política de Privacidad</a
+			>
 		</p>
 	</div>
 </div>

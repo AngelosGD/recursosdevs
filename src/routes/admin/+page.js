@@ -1,18 +1,23 @@
 import { supabase } from '$lib/supabase.js';
 
 export async function load() {
-	const { data: pendientes } = await supabase.from('recursos').select('*').eq('aprobado', false);
+	const [recursosRes, cursosRes, mensajesRes] = await Promise.all([
+		supabase.from('recursos').select('*'),
+		supabase.from('cursos').select('*'),
+		supabase.from('contacto').select('*').order('created_at', { ascending: false })
+	]);
 
-	const { data: todos } = await supabase.from('recursos').select('*');
+	const todos = recursosRes.data ?? [];
+	const pendientes = todos.filter((r) => !r.aprobado);
 
-	const { data: mensajes } = await supabase
-		.from('contacto')
-		.select('*')
-		.order('created_at', { ascending: false });
+	const cursosTodos = cursosRes.data ?? [];
+	const cursosPendientes = cursosTodos.filter((c) => !c.aprobado);
 
 	return {
-		pendientes: pendientes ?? [],
-		todos: todos ?? [],
-		mensajes: mensajes ?? []
+		pendientes,
+		todos,
+		mensajes: mensajesRes.data ?? [],
+		cursosTodos,
+		cursosPendientes
 	};
 }

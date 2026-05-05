@@ -2,7 +2,10 @@ import { writable } from 'svelte/store';
 
 function createThemeStore() {
 	const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null;
-	const prefersDark = typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : false;
+	const prefersDark =
+		typeof window !== 'undefined'
+			? window.matchMedia('(prefers-color-scheme: dark)').matches
+			: false;
 	const initial = stored ? stored === 'dark' : prefersDark;
 
 	const { subscribe, set, update } = writable(initial);

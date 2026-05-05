@@ -1,53 +1,127 @@
 <script>
-	import Footer from '$lib/components/Footer.svelte';
+	import CardCurso from '$lib/components/cardCurso.svelte';
+	import { page } from '$app/state';
+
+	let { data } = $props();
+	let cursos = data.cursos;
+	let session = data.session;
+	let pagination = data.pagination;
+
+	let categoriaActiva = $state('Todos');
+	let busqueda = $state('');
+
+	const todasCategorias = ['Todos', ...new Set(cursos.flatMap((c) => c.categorias))];
+
+	let cursosFiltrados = $derived(
+		(() => {
+			let lista =
+				categoriaActiva === 'Todos'
+					? cursos
+					: cursos.filter((c) => c.categorias.includes(categoriaActiva));
+
+			if (busqueda.trim()) {
+				lista = lista.filter(
+					(c) =>
+						c.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
+						c.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
+						(c.instructor && c.instructor.toLowerCase().includes(busqueda.toLowerCase()))
+				);
+			}
+
+			return lista;
+		})()
+	);
 </script>
 
 <svelte:head>
 	<title>Cursos - devRekursos</title>
 </svelte:head>
 
-<div class="min-h-[calc(100vh-200px)] flex items-center justify-center px-4">
-	<div class="text-center max-w-2xl">
-		<div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl mb-8 shadow-xl">
-			<svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-			</svg>
-		</div>
+<!-- Hero -->
+<section class="text-center py-8 sm:py-14 px-4">
+	<h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+		Cursos de <span class="text-blue-600 dark:text-blue-400">Programación</span>
+	</h1>
+	<p class="text-gray-500 dark:text-gray-400 text-base sm:text-lg max-w-xl mx-auto mb-6 sm:mb-8">
+		Aprende con los mejores cursos recomendados por la comunidad de desarrolladores
+	</p>
+</section>
 
-		<h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-			Estamos trabajando en esto
-		</h1>
-
-		<p class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-			Pronto podrás encontrar los mejores cursos de programación para impulsar tu carrera profesional.
-		</p>
-
-		<div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 sm:p-8 inline-block">
-			<p class="text-gray-700 dark:text-gray-200 font-medium text-lg mb-2">
-				✨ ¡Mantente atento!
-			</p>
-			<p class="text-gray-500 dark:text-gray-400 text-sm">
-				Estamos seleccionando los cursos más valiosos para ti.
-			</p>
-			<div class="flex items-center justify-center gap-1 mt-4">
-				<span class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0ms;"></span>
-				<span class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 150ms;"></span>
-				<span class="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style="animation-delay: 300ms;"></span>
-			</div>
-		</div>
-
-		<div class="mt-10">
-			<a
-				href="/"
-				class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+<!-- Filtros -->
+<div class="px-4">
+	<div class="flex flex-wrap gap-2 mb-6">
+		{#each todasCategorias as cat (cat)}
+			<button
+				onclick={() => (categoriaActiva = cat)}
+				class="px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+					{categoriaActiva === cat
+					? 'bg-blue-600 text-white dark:bg-blue-500'
+					: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 			>
-				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-				</svg>
-				Volver a Recursos
-			</a>
-		</div>
+				{cat}
+			</button>
+		{/each}
 	</div>
 </div>
 
-<Footer />
+<!-- Buscador -->
+<div class="px-4 mb-6">
+	<input
+		bind:value={busqueda}
+		placeholder="Buscar curso por nombre, instructor..."
+		class="w-full max-w-md mx-auto block border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-400 dark:focus:border-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+	/>
+</div>
+
+{#if cursosFiltrados.length === 0}
+	<div class="text-center py-16 px-4">
+		<p class="text-5xl mb-4">📚</p>
+		<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay cursos todavía</h2>
+		<p class="text-gray-500 dark:text-gray-400">Pronto añadiremos los mejores cursos para ti</p>
+	</div>
+{:else}
+	<!-- Grid cursos -->
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4">
+		{#each cursosFiltrados as curso (curso.id)}
+			<CardCurso {...curso} {session} />
+		{/each}
+	</div>
+
+	<!-- Paginación -->
+	{#if pagination.totalPages > 1}
+		<div class="flex items-center justify-center gap-2 mt-12 mb-20 px-4">
+			{#if pagination.page > 1}
+				<a
+					href="/cursos?page={pagination.page - 1}"
+					class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+				>
+					← Anterior
+				</a>
+			{/if}
+
+			<div class="flex gap-1">
+				{#each Array(pagination.totalPages) as _, i}
+					{@const pageNum = i + 1}
+					<a
+						href="/cursos?page={pageNum}"
+						class="w-10 h-10 flex items-center justify-center rounded-lg transition-colors {pageNum ===
+						pagination.page
+							? 'bg-blue-600 text-white'
+							: 'border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}"
+					>
+						{pageNum}
+					</a>
+				{/each}
+			</div>
+
+			{#if pagination.page < pagination.totalPages}
+				<a
+					href="/cursos?page={pagination.page + 1}"
+					class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+				>
+					Siguiente →
+				</a>
+			{/if}
+		</div>
+	{/if}
+{/if}
