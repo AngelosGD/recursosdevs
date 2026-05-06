@@ -43,8 +43,7 @@
 			idioma,
 			categorias: categorias.split(',').map((c) => c.trim()),
 			aprobado: false,
-			user_id: session?.user?.id,
-			autor_nombre: session?.user?.email?.split('@')[0] || 'Anónimo'
+			user_id: session?.user?.id
 		});
 
 		cargando = false;
@@ -75,8 +74,7 @@
 			categorias: categoriasC.split(',').map((c) => c.trim()),
 			imagen: imagenC,
 			aprobado: false,
-			user_id: session?.user?.id,
-			autor_nombre: session?.user?.email?.split('@')[0] || 'Anónimo'
+			user_id: session?.user?.id
 		});
 
 		cargando = false;
