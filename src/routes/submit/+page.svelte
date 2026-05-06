@@ -42,8 +42,7 @@
 			nivel,
 			idioma,
 			categorias: categorias.split(',').map((c) => c.trim()),
-			aprobado: false,
-			user_id: session?.user?.id
+			aprobado: false
 		});
 
 		cargando = false;
@@ -73,8 +72,7 @@
 			nivel: nivelC,
 			categorias: categoriasC.split(',').map((c) => c.trim()),
 			imagen: imagenC,
-			aprobado: false,
-			user_id: session?.user?.id
+			aprobado: false
 		});
 
 		cargando = false;
