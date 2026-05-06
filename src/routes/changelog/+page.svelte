@@ -3,6 +3,20 @@
 
 	const cambios = [
 		{
+			fecha: '2026-05-06',
+			titulo: 'Confirmación de email y mejoras de autenticación',
+			imagen: 'https://i.imgur.com/confirmar-email.png',
+			descripcion:
+				'Al registrar una cuenta, se envia un link de confirmación por email. Ahora redirige a una página que confirma la activación.',
+			porQue:
+				'Necesitábamos un flujo completo de registro con verificación de email.',
+			detalles: [
+				'Nueva página /auth/confirmar para procesar confirmación',
+				'Página /cuenta-activada con mensaje de éxito',
+				'Admin oculto para usuarios no autorizados'
+			]
+		},
+		{
 			fecha: '2026-05-05',
 			titulo: 'Paginación corregida',
 			imagen: 'https://i.imgur.com/paginacion-corregida.png',
