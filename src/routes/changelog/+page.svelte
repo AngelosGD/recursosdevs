@@ -3,6 +3,36 @@
 
 	const cambios = [
 		{
+			fecha: '2026-05-17',
+			titulo: 'Filtros avanzados y nueva sección de Videos',
+			imagen: 'https://i.imgur.com/filtros-videos.png',
+			descripcion: 'Nueva barra lateral con filtros por categoría, nivel e idioma para recursos y cursos. Además, nueva sección de videos con thumbnails de YouTube.',
+			porQue: 'Los usuarios necesitaban una forma más eficiente de encontrar recursos específicos y explorar contenido en video.',
+			detalles: [
+				'Barra lateral con filtros en desktop y móvil',
+				'Filtros por nivel (Principiante, Intermedio, Avanzado)',
+				'Filtros por idioma (Español, Inglés, Variado)',
+				'Filtros por precio en cursos (Gratis, De pago, Freemium)',
+				'Nueva página /videos con thumbnails de YouTube',
+				'Formulario /submit ahora incluye opción Video',
+				'Panel admin gestionable para videos'
+			]
+		},
+		{
+			fecha: '2026-05-17',
+			titulo: 'Mejoras de seguridad y sanitización',
+			imagen: 'https://i.imgur.com/seguridad.png',
+			descripcion: 'Implementado sistema de sanitización para todos los inputs y mejora en la protección de rutas del admin.',
+			porQue: 'Para prevenir inyección de código malicioso y proteger el acceso al panel de administración.',
+			detalles: [
+				'Nuevo módulo src/lib/sanitizer.js',
+				'Sanitización de títulos, descripciones, URLs y categorías',
+				'Validación de URLs (http/https)',
+				'Protección de ruta /admin con variable de entorno',
+				'Favicon personalizado con logo "dr"'
+			]
+		},
+		{
 			fecha: '2026-05-06',
 			titulo: 'Confirmación de email y mejoras de autenticación',
 			imagen: 'https://i.imgur.com/confirmar-email.png',
@@ -127,7 +157,7 @@
 				class="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium"
 			>
 				<span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-				Última actualización: Mayo 2026
+				Última actualización: 17 Mayo 2026
 			</div>
 		</div>
 

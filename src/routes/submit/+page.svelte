@@ -1,5 +1,6 @@
 <script>
 	import { supabase } from '$lib/supabase.js';
+	import { sanitizeInput, sanitizeTextarea, sanitizeUrl, sanitizeCategories } from '$lib/sanitizer.js';
 
 	let { data } = $props();
 	let session = data.session;
@@ -26,6 +27,14 @@
 	let categoriasC = $state('');
 	let imagenC = $state('');
 
+	let tituloV = $state('');
+	let descripcionV = $state('');
+	let urlV = $state('');
+	let canalV = $state('');
+	let duracionV = $state('');
+	let nivelV = $state('Variado');
+	let categoriasV = $state('');
+
 	let errores = $state({});
 
 	async function enviarRecurso() {
@@ -34,14 +43,14 @@
 		cargando = true;
 
 		const { error } = await supabase.from('recursos').insert({
-			titulo,
-			descripcion,
-			url,
-			image_url,
+			titulo: sanitizeInput(titulo),
+			descripcion: sanitizeTextarea(descripcion),
+			url: sanitizeUrl(url),
+			image_url: image_url ? sanitizeUrl(image_url) : null,
 			tipo,
 			nivel,
 			idioma,
-			categorias: categorias.split(',').map((c) => c.trim()),
+			categorias: sanitizeCategories(categorias),
 			aprobado: false
 		});
 
@@ -64,14 +73,14 @@
 		cargando = true;
 
 		const { error } = await supabase.from('cursos').insert({
-			titulo: tituloC,
-			descripcion: descripcionC,
-			url: urlC,
-			instructor: instructorC,
+			titulo: sanitizeInput(tituloC),
+			descripcion: sanitizeTextarea(descripcionC),
+			url: sanitizeUrl(urlC),
+			instructor: sanitizeInput(instructorC),
 			precio: precioC,
 			nivel: nivelC,
-			categorias: categoriasC.split(',').map((c) => c.trim()),
-			imagen: imagenC,
+			categorias: sanitizeCategories(categoriasC),
+			imagen: imagenC ? sanitizeUrl(imagenC) : null,
 			aprobado: false
 		});
 
@@ -104,6 +113,45 @@
 		if (!categoriasC.trim()) e.categoriasC = 'Agrega al menos una categoría';
 		return e;
 	}
+
+	function validarVideo() {
+		const e = {};
+		if (!tituloV.trim()) e.tituloV = 'El nombre es obligatorio';
+		if (!descripcionV.trim()) e.descripcionV = 'La descripción es obligatoria';
+		if (!urlV.trim()) e.urlV = 'La URL es obligatoria';
+		else if (!urlV.startsWith('http')) e.urlV = 'La URL debe empezar con http';
+		if (!categoriasV.trim()) e.categoriasV = 'Agrega al menos una categoría';
+		return e;
+	}
+
+	async function enviarVideo() {
+		const e = validarVideo();
+		if (Object.keys(e).length > 0) {
+			errores = e;
+			return;
+		}
+		cargando = true;
+
+		const { error } = await supabase.from('videos').insert({
+			titulo: sanitizeInput(tituloV),
+			descripcion: sanitizeTextarea(descripcionV),
+			url: sanitizeUrl(urlV),
+			canal: sanitizeInput(canalV),
+			duracion: sanitizeInput(duracionV),
+			nivel: nivelV,
+			categorias: sanitizeCategories(categoriasV),
+			aprobado: false
+		});
+
+		cargando = false;
+
+		if (error) {
+			console.error(error);
+			return;
+		}
+
+		enviado = true;
+	}
 </script>
 
 {#if enviado}
@@ -125,10 +173,10 @@
 		<p class="text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">Lo revisaremos antes de publicarlo.</p>
 
 		<!-- Selector de tipo -->
-		<div class="flex gap-3 mb-8">
+		<div class="flex gap-2 sm:gap-3 mb-8">
 			<button
 				onclick={() => (tipoSeleccion = 'recurso')}
-				class="flex-1 py-3 px-4 rounded-xl font-medium transition-colors {tipoSeleccion ===
+				class="flex-1 py-3 px-2 sm:px-4 rounded-xl font-medium transition-colors {tipoSeleccion ===
 				'recurso'
 					? 'bg-blue-600 text-white dark:bg-blue-500'
 					: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
@@ -136,8 +184,16 @@
 				📚 Recurso
 			</button>
 			<button
+				onclick={() => (tipoSeleccion = 'video')}
+				class="flex-1 py-3 px-2 sm:px-4 rounded-xl font-medium transition-colors {tipoSeleccion === 'video'
+					? 'bg-red-600 text-white dark:bg-red-500'
+					: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+			>
+				🎬 Video
+			</button>
+			<button
 				onclick={() => (tipoSeleccion = 'curso')}
-				class="flex-1 py-3 px-4 rounded-xl font-medium transition-colors {tipoSeleccion === 'curso'
+				class="flex-1 py-3 px-2 sm:px-4 rounded-xl font-medium transition-colors {tipoSeleccion === 'curso'
 					? 'bg-purple-600 text-white dark:bg-purple-500'
 					: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 			>
@@ -276,6 +332,123 @@
 					class="w-full bg-blue-600 dark:bg-blue-500 text-white py-3 rounded-xl font-medium hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:opacity-50"
 				>
 					{cargando ? 'Enviando...' : 'Enviar sugerencia'}
+				</button>
+			</div>
+		{:else if tipoSeleccion === 'video'}
+			<div class="flex flex-col gap-4 sm:gap-5">
+				<div>
+					<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						> Título del video</label
+					>
+					<input
+						bind:value={tituloV}
+						type="text"
+						placeholder="Ej: 10 Tips para escribir código limpio"
+						class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 {errores.tituloV
+							? 'border-red-400 focus:border-red-400'
+							: 'border-gray-200 dark:border-gray-700 focus:border-red-400 dark:focus:border-red-500'}"
+					/>
+					{#if errores.tituloV}
+						<p class="text-red-500 dark:text-red-400 text-xs mt-1">{errores.tituloV}</p>
+					{/if}
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>Canal / Creador</label
+					>
+					<input
+						bind:value={canalV}
+						type="text"
+						placeholder="Ej: MiduDev, freeCodeCamp, etc."
+						class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-400 dark:focus:border-red-500 bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+					/>
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>Descripción</label
+					>
+					<textarea
+						bind:value={descripcionV}
+						rows="3"
+						placeholder="¿De qué trata el video y por qué es útil?"
+						class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 {errores.descripcionV
+							? 'border-red-400 focus:border-red-400'
+							: 'border-gray-200 dark:border-gray-700 focus:border-red-400 dark:focus:border-red-500'}"
+					></textarea>
+					{#if errores.descripcionV}
+						<p class="text-red-500 dark:text-red-400 text-xs mt-1">{errores.descripcionV}</p>
+					{/if}
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>URL del video</label
+					>
+					<input
+						bind:value={urlV}
+						type="url"
+						placeholder="https://youtube.com/watch?v=..."
+						class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 {errores.urlV
+							? 'border-red-400 focus:border-red-400'
+							: 'border-gray-200 dark:border-gray-700 focus:border-red-400 dark:focus:border-red-500'}"
+					/>
+					{#if errores.urlV}
+						<p class="text-red-500 dark:text-red-400 text-xs mt-1">{errores.urlV}</p>
+					{/if}
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>Duración (opcional)</label
+					>
+					<input
+						bind:value={duracionV}
+						type="text"
+						placeholder="Ej: 15:30, 2h, 45 min"
+						class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-400 dark:focus:border-red-500 bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+					/>
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>Categorías (separadas por coma)</label
+					>
+					<input
+						bind:value={categoriasV}
+						type="text"
+						placeholder="JavaScript, Tips, Clean Code"
+						class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 {errores.categoriasV
+							? 'border-red-400 focus:border-red-400'
+							: 'border-gray-200 dark:border-gray-700 focus:border-red-400 dark:focus:border-red-500'}"
+					/>
+					{#if errores.categoriasV}
+						<p class="text-red-500 dark:text-red-400 text-xs mt-1">{errores.categoriasV}</p>
+					{/if}
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+						>Nivel</label
+					>
+					<select
+						bind:value={nivelV}
+						class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-400 dark:focus:border-red-500 bg-white dark:bg-gray800 dark:text-white"
+					>
+						<option>Principiante</option>
+						<option>Intermedio</option>
+						<option>Avanzado</option>
+						<option>Variado</option>
+					</select>
+				</div>
+
+				<button
+					onclick={enviarVideo}
+					disabled={cargando}
+					class="w-full bg-red-600 dark:bg-red-500 text-white py-3 rounded-xl font-medium hover:bg-red-700 dark:hover:bg-red-600 transition-colors disabled:opacity-50"
+				>
+					{cargando ? 'Enviando...' : 'Enviar video'}
 				</button>
 			</div>
 		{:else}

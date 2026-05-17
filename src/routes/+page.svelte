@@ -10,15 +10,28 @@
 
 	let categoriaActiva = $state('Todos');
 	let busqueda = $state('');
+	let nivelActivo = $state('Todos');
+	let idiomaActivo = $state('Todos');
 
 	const todasCategorias = $derived(['Todos', ...new Set(recursos.flatMap((r) => r.categorias))]);
+	const niveles = ['Todos', 'Principiante', 'Intermedio', 'Avanzado', 'Variado'];
+	const idiomas = ['Todos', 'Español', 'Inglés', 'Variado'];
 
 	let recursosFiltrados = $derived(
 		(() => {
-			let lista =
-				categoriaActiva === 'Todos'
-					? recursos
-					: recursos.filter((r) => r.categorias.includes(categoriaActiva));
+			let lista = recursos;
+
+			if (categoriaActiva !== 'Todos') {
+				lista = lista.filter((r) => r.categorias.includes(categoriaActiva));
+			}
+
+			if (nivelActivo !== 'Todos') {
+				lista = lista.filter((r) => r.nivel === nivelActivo);
+			}
+
+			if (idiomaActivo !== 'Todos') {
+				lista = lista.filter((r) => r.idioma === idiomaActivo);
+			}
 
 			if (busqueda.trim()) {
 				lista = lista.filter(
@@ -37,6 +50,15 @@
 	function irPagina(nuevaPagina) {
 		goto(`?page=${nuevaPagina}`, { keepFocus: true });
 	}
+
+	function limpiarFiltros() {
+		categoriaActiva = 'Todos';
+		nivelActivo = 'Todos';
+		idiomaActivo = 'Todos';
+		busqueda = '';
+	}
+
+	let sidebarAbierta = $state(false);
 </script>
 
 <!-- Hero -->
@@ -134,20 +156,92 @@
 		class="w-full max-w-md mx-auto block border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-xl px-4 mb-5 py-2.5 text-sm focus:outline-none focus:border-blue-400 dark:focus:border-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
 	/>
 </div>
-<!-- Filtros -->
-<div class="px-4">
-	<div class="flex flex-wrap gap-2 mb-8">
-		{#each todasCategorias as cat (cat)}
-			<button
-				onclick={() => (categoriaActiva = cat)}
-				class="px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-					{categoriaActiva === cat
-					? 'bg-blue-600 text-white dark:bg-blue-500'
-					: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
-			>
-				{cat}
-			</button>
-		{/each}
+
+<!-- Toggle sidebar mobile -->
+<div class="px-4 mb-4">
+	<button
+		onclick={() => (sidebarAbierta = !sidebarAbierta)}
+		class="lg:hidden w-full flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300"
+	>
+		<span>Filtros</span>
+		<svg class="w-5 h-5 transition-transform {sidebarAbierta ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+		</svg>
+	</button>
+</div>
+
+<!-- Filtros desktop sidebar + mobile -->
+<div class="flex flex-col lg:flex-row gap-6 px-4 mb-8">
+	<!-- Sidebar -->
+	<aside class="w-full lg:w-64 shrink-0 space-y-6 {sidebarAbierta ? 'block' : 'hidden lg:block'}">
+		<!-- Categorías -->
+		<div>
+			<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Categoría</h3>
+			<div class="flex flex-wrap lg:flex-col gap-2">
+				{#each todasCategorias as cat (cat)}
+					<button
+						onclick={() => (categoriaActiva = cat)}
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {categoriaActiva === cat
+							? 'bg-blue-600 text-white dark:bg-blue-500'
+							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+					>
+						{cat}
+					</button>
+				{/each}
+			</div>
+		</div>
+
+		<!-- Nivel -->
+		<div>
+			<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Nivel</h3>
+			<div class="flex flex-wrap lg:flex-col gap-2">
+				{#each niveles as nivel (nivel)}
+					<button
+						onclick={() => (nivelActivo = nivel)}
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {nivelActivo === nivel
+							? 'bg-blue-600 text-white dark:bg-blue-500'
+							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+					>
+						{nivel}
+					</button>
+				{/each}
+			</div>
+		</div>
+
+		<!-- Idioma -->
+		<div>
+			<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Idioma</h3>
+			<div class="flex flex-wrap lg:flex-col gap-2">
+				{#each idiomas as idioma (idioma)}
+					<button
+						onclick={() => (idiomaActivo = idioma)}
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {idiomaActivo === idioma
+							? 'bg-blue-600 text-white dark:bg-blue-500'
+							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+					>
+						{idioma}
+					</button>
+				{/each}
+			</div>
+		</div>
+
+		<!-- Limpiar filtros -->
+		<button
+			onclick={limpiarFiltros}
+			class="text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+		>
+			Limpiar filtros
+		</button>
+	</aside>
+
+	<!-- Resultados -->
+	<div class="flex-1">
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{recursosFiltrados.length} recursos encontrados</p>
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+			{#each recursosFiltrados as recurso (recurso.id)}
+				<RecursoCard {...recurso} {session} />
+			{/each}
+		</div>
 	</div>
 </div>
 

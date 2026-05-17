@@ -1,57 +1,79 @@
-# sv
+# devRekursos
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Directorio de recursos para desarrolladores - una colección curada de herramientas, cursos, tutoriales y videos de programación.
 
-## Creating a project
+## Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Framework**: SvelteKit 2.x + Svelte 5 (Runes)
+- **Estilos**: Tailwind CSS 4
+- **Base de datos**: Supabase (PostgreSQL)
+- **Autenticación**: Supabase Auth
+- **Despliegue**: Cloudflare Pages
 
-```sh
-# create a new project
-npx sv create my-app
+## Estructura
+
+```
+src/
+├── lib/
+│   ├── components/     # Componentes reutilizables
+│   │   ├── cardResource.svelte
+│   │   ├── cardCurso.svelte
+│   │   ├── Navbar.svelte
+│   │   ├── Footer.svelte
+│   │   └── ...
+│   ├── sanitizer.js    # Funciones de sanitización
+│   ├── supabase.js     # Cliente Supabase
+│   └── theme.js        # Estado del tema
+├── routes/
+│   ├── +page.svelte           # Home (recursos)
+│   ├── cursos/               # Cursos
+│   ├── videos/               # Videos
+│   ├── submit/               # Sugerir recurso/curso/video
+│   ├── login/                # Login/Registro
+│   ├── favoritos/            # Favoritos (requiere auth)
+│   ├── admin/                # Panel admin
+│   └── ...
+└── hooks.server.js           # Middleware autenticación
 ```
 
-To recreate this project with the same configuration:
+## Variables de entorno
 
-```sh
-# recreate this project
-npx sv@0.15.0 create --template minimal --no-types --add prettier eslint --install npm recursosdevs
+```env
+PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
+PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
+ADMIN_EMAIL=tu-email@gmail.com
 ```
 
-## Developing
+## Scripts
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```bash
+pnpm dev          # Desarrollo
+pnpm build        # Producción
+pnpm preview      # Previsualizar build
+pnpm lint         # Verificar código
+pnpm format        # Formatear código
 ```
 
-## Building
+## Base de datos
 
-To create a production version of your app:
+Tablas principales (ver `src/lib/sql-queries.sql`):
+- `recursos` - Recursos diversos
+- `cursos` - Cursos de programación
+- `videos` - Videos de conceptos/tips
+- `favoritos` / `cursos_favoritos` / `videos_favoritos` - Favoritos por usuario
+- `reportes` - Reportes de recursos
+- `contacto` - Mensajes de contacto
 
-```sh
-npm run build
-```
+## Características
 
-You can preview the production build with `npm run preview`.
+- Filtros por categoría, nivel e idioma (barra lateral)
+- Sistema de favoritos para usuarios registrados
+- Panel de administración para aprobar/gestionar contenido
+- Tema claro/oscuro
+- Diseño responsive (mobile-first)
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Notas para desarrollo
 
--- Categorias elegidas de momento --
-
-Full Stack
-Aprender
-Guias
-FRONTEND
-diseño
-base de datos
-
-contraseña de la bd --
-
-> # NO SE TE OLVIDE BORRAR RESTO CAON
->
-> LLj84HLjAZ4pZqrt
+- El admin está protegido por email en variable de entorno ADMIN_EMAIL
+- Los inputs se sanitizan en cliente con `src/lib/sanitizer.js`
+- Rutas `/favoritos` y `/admin` requieren autenticación

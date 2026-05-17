@@ -11,6 +11,9 @@
 	let cursosPendientes = $state(data.cursosPendientes);
 	let cursosTodos = $state(data.cursosTodos);
 
+	let videosPendientes = $state(data.videosPendientes);
+	let videosTodos = $state(data.videosTodos);
+
 	let vista = $state('pendientes');
 	let vistaAdmin = $state('recursos');
 	let busqueda = $state('');
@@ -36,6 +39,15 @@
 	let imagenC = $state('');
 	let agregandoCurso = $state(false);
 
+	let tituloV = $state('');
+	let descripcionV = $state('');
+	let urlV = $state('');
+	let canalV = $state('');
+	let duracionV = $state('');
+	let nivelV = $state('Variado');
+	let categoriasV = $state('');
+	let agregandoVideo = $state(false);
+
 	let editandoId = $state(null);
 	let editandoDatos = $state(null);
 
@@ -49,6 +61,12 @@
 		const lista = vista === 'pendientes' ? cursosPendientes : cursosTodos;
 		if (!busqueda) return lista;
 		return lista.filter((c) => c.titulo.toLowerCase().includes(busqueda.toLowerCase()));
+	});
+
+	let videosMostrados = $derived(() => {
+		const lista = vista === 'pendientes' ? videosPendientes : videosTodos;
+		if (!busqueda) return lista;
+		return lista.filter((v) => v.titulo.toLowerCase().includes(busqueda.toLowerCase()));
 	});
 
 	async function aprobar(id) {
@@ -107,6 +125,51 @@
 		categoriasC = '';
 		imagenC = '';
 		agregandoCurso = false;
+	}
+
+	async function aprobarVideo(id) {
+		await supabase.from('videos').update({ aprobado: true }).eq('id', id);
+		videosPendientes = videosPendientes.filter((v) => v.id !== id);
+		videosTodos = videosTodos.map((v) => (v.id === id ? { ...v, aprobado: true } : v));
+	}
+
+	async function rechazarVideo(id) {
+		await supabase.from('videos').delete().eq('id', id);
+		videosPendientes = videosPendientes.filter((v) => v.id !== id);
+		videosTodos = videosTodos.filter((v) => v.id !== id);
+	}
+
+	async function agregarVideo() {
+		cargando = true;
+		const { data: nuevo, error } = await supabase
+			.from('videos')
+			.insert({
+				titulo: tituloV,
+				descripcion: descripcionV,
+				url: urlV,
+				canal: canalV,
+				duracion: duracionV,
+				nivel: nivelV,
+				categorias: categoriasV.split(',').map((c) => c.trim()),
+				aprobado: true
+			})
+			.select()
+			.single();
+
+		cargando = false;
+		if (error) {
+			console.error(error);
+			return;
+		}
+
+		videosTodos = [nuevo, ...videosTodos];
+		tituloV = '';
+		descripcionV = '';
+		urlV = '';
+		canalV = '';
+		duracionV = '';
+		categoriasV = '';
+		agregandoVideo = false;
 	}
 
 	async function agregarRecurso() {
@@ -242,6 +305,12 @@
 			{agregando ? 'Cancelar' : '+ Agregar recurso'}
 		</button>
 		<button
+			onclick={() => (agregandoVideo = !agregandoVideo)}
+			class="bg-red-600 dark:bg-red-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-red-700 dark:hover:bg-red-600 transition-colors"
+		>
+			{agregandoVideo ? 'Cancelar' : '+ Agregar video'}
+		</button>
+		<button
 			onclick={() => (agregandoCurso = !agregandoCurso)}
 			class="bg-purple-600 dark:bg-purple-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors"
 		>
@@ -259,6 +328,14 @@
 			: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 	>
 		Recursos
+	</button>
+	<button
+		onclick={() => (vistaAdmin = 'videos')}
+		class="px-4 py-2 rounded-xl text-sm font-medium transition-colors {vistaAdmin === 'videos'
+			? 'bg-red-600 text-white dark:bg-red-500'
+			: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+	>
+		Videos
 	</button>
 	<button
 		onclick={() => (vistaAdmin = 'cursos')}
@@ -293,6 +370,33 @@
 			<p class="text-sm text-green-600 dark:text-green-400 mb-1">Aprobados</p>
 			<p class="text-3xl sm:text-4xl font-bold text-green-600 dark:text-green-400">
 				{todos.filter((r) => r.aprobado).length}
+			</p>
+		</div>
+	</div>
+{:else if vistaAdmin === 'videos'}
+	<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+		<div
+			class="border border-gray-200 dark:border-gray-700 rounded-2xl p-4 sm:p-5 bg-white dark:bg-gray-800"
+		>
+			<p class="text-sm text-gray-400 dark:text-gray-500 mb-1">Videos totales</p>
+			<p class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+				{videosTodos.length}
+			</p>
+		</div>
+		<div
+			class="border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-4 sm:p-5"
+		>
+			<p class="text-sm text-yellow-600 dark:text-yellow-400 mb-1">Pendientes</p>
+			<p class="text-3xl sm:text-4xl font-bold text-yellow-600 dark:text-yellow-400">
+				{videosPendientes.length}
+			</p>
+		</div>
+		<div
+			class="border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 sm:p-5"
+		>
+			<p class="text-sm text-green-600 dark:text-green-400 mb-1">Aprobados</p>
+			<p class="text-3xl sm:text-4xl font-bold text-green-600 dark:text-green-400">
+				{videosTodos.filter((v) => v.aprobado).length}
 			</p>
 		</div>
 	</div>
@@ -464,6 +568,63 @@
 			{cargando ? 'Guardando...' : 'Guardar recurso'}
 		</button>
 	</div>
+{:else if agregandoVideo}
+	<div
+		class="border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 sm:p-6 mb-8 flex flex-col gap-4"
+	>
+		<h2 class="font-bold text-gray-900 dark:text-white">Agregar video</h2>
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+			<input
+				bind:value={tituloV}
+				placeholder="Título"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-red-400"
+			/>
+			<input
+				bind:value={canalV}
+				placeholder="Canal"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-red-400"
+			/>
+			<input
+				bind:value={urlV}
+				placeholder="URL"
+				type="url"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-red-400"
+			/>
+			<input
+				bind:value={duracionV}
+				placeholder="Duración (ej: 15:30)"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-red-400"
+			/>
+			<input
+				bind:value={categoriasV}
+				placeholder="Categorías separadas por coma"
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-red-400"
+			/>
+		</div>
+		<textarea
+			bind:value={descripcionV}
+			placeholder="Descripción"
+			rows="2"
+			class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-red-400"
+		></textarea>
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+			<select
+				bind:value={nivelV}
+				class="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm bg-white dark:bg-gray-800 dark:text-white"
+			>
+				<option>Principiante</option><option>Intermedio</option><option>Avanzado</option><option
+					>Variado</option
+				>
+			</select>
+		</div>
+		<button
+			onclick={agregarVideo}
+			disabled={cargando}
+			class="bg-red-600 dark:bg-red-500 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-red-700 dark:hover:bg-red-600 transition-colors disabled:opacity-50"
+		>
+			{cargando ? 'Guardando...' : 'Guardar video'}
+		</button>
+	</div>
 {:else if agregandoCurso}
 	<div
 		class="border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-4 sm:p-6 mb-8 flex flex-col gap-4"
@@ -559,6 +720,34 @@
 			class="w-full sm:flex-1 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-400 dark:focus:border-blue-500 bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
 		/>
 	</div>
+{:else if vistaAdmin === 'videos'}
+	<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+		<div class="flex gap-2">
+			<button
+				onclick={() => (vista = 'pendientes')}
+				class="px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+					{vista === 'pendientes'
+					? 'bg-red-600 text-white dark:bg-red-500'
+					: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+			>
+				Pendientes ({videosPendientes.length})
+			</button>
+			<button
+				onclick={() => (vista = 'todos')}
+				class="px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+					{vista === 'todos'
+					? 'bg-red-600 text-white dark:bg-red-500'
+					: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+			>
+				Todos ({videosTodos.length})
+			</button>
+		</div>
+		<input
+			bind:value={busqueda}
+			placeholder="Buscar video..."
+			class="w-full sm:flex-1 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-red-400 dark:focus:border-red-500 bg-white dark:bg-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+		/>
+	</div>
 {:else}
 	<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
 		<div class="flex gap-2">
@@ -647,6 +836,64 @@
 								>
 								<button
 									onclick={() => rechazar(recurso.id)}
+									class="bg-red-500 text-white px-2 py-1 rounded-lg text-xs hover:bg-red-600 transition-colors"
+									>✕</button
+								>
+							</div>
+						{/if}
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/if}
+{:else if vistaAdmin === 'videos'}
+	{#if videosMostrados().length === 0}
+		<p class="text-gray-400 dark:text-gray-500 text-sm">No hay videos.</p>
+	{:else}
+		<div class="flex flex-col gap-3">
+			{#each videosMostrados() as video (video.id)}
+				<div
+					class="border border-gray-200 dark:border-gray-700 rounded-2xl p-5 flex items-start justify-between gap-4 bg-white dark:bg-gray-800"
+				>
+					<div class="flex-1 min-w-0">
+						<div class="flex items-center gap-2 mb-1 flex-wrap">
+							<span class="font-bold text-gray-900 dark:text-white">{video.titulo}</span>
+							<span class="text-xs text-gray-400 dark:text-gray-500"
+								>{video.nivel}</span
+							>
+							{#if video.aprobado}
+								<span
+									class="text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full"
+									>Aprobado</span
+								>
+							{:else}
+								<span
+									class="text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 px-2 py-0.5 rounded-full"
+									>Pendiente</span
+								>
+							{/if}
+						</div>
+						{#if video.canal}
+							<p class="text-sm text-red-500 dark:text-red-400 mb-1">Canal: {video.canal}</p>
+						{/if}
+						<p class="text-sm text-gray-500 dark:text-gray-400 mb-1 truncate">{video.descripcion}</p>
+						<a
+							href={video.url}
+							target="_blank"
+							class="text-xs text-blue-500 dark:text-blue-400 hover:underline block truncate"
+							>{video.url}</a
+						>
+					</div>
+					<div class="flex flex-col gap-2 shrink-0">
+						{#if !video.aprobado}
+							<div class="flex gap-1">
+								<button
+									onclick={() => aprobarVideo(video.id)}
+									class="bg-green-500 text-white px-2 py-1 rounded-lg text-xs hover:bg-green-600 transition-colors"
+									>✓</button
+								>
+								<button
+									onclick={() => rechazarVideo(video.id)}
 									class="bg-red-500 text-white px-2 py-1 rounded-lg text-xs hover:bg-red-600 transition-colors"
 									>✕</button
 								>
