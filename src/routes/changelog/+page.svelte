@@ -4,6 +4,21 @@
 	const cambios = [
 		{
 			fecha: '2026-05-17',
+			titulo: 'Favoritos unificados y mejoras visuales',
+			imagen: 'https://i.imgur.com/favoritos-mejorado.png',
+			descripcion: 'La página de favoritos ahora incluye 3 pestañas para recursos, cursos y videos. Las cards tienen efectos hover animadas y la flecha se mueve al hacer hover.',
+			porQue: 'Los usuarios necesitaban un lugar centralizado para ver todos sus favoritos de los 3 tipos de contenido.',
+			detalles: [
+				'Nueva página de favoritos con tabs: Recursos, Cursos, Videos',
+				'Botón de guardar videos en la página /videos',
+				'Nuevo componente videoActions.svelte',
+				'Efecto hover en cards con borde y sombra de color',
+				'Animación de escala al hover (scale-105)',
+				'Flecha "Ver recurso/curso" con transición animada'
+			]
+		},
+		{
+			fecha: '2026-05-17',
 			titulo: 'Filtros avanzados y nueva sección de Videos',
 			imagen: 'https://i.imgur.com/filtros-videos.png',
 			descripcion: 'Nueva barra lateral con filtros por categoría, nivel e idioma para recursos y cursos. Además, nueva sección de videos con thumbnails de YouTube.',

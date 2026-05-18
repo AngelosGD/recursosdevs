@@ -245,13 +245,6 @@
 	</div>
 </div>
 
-<!-- Grid recursos -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4">
-	{#each recursosFiltrados as recurso (recurso.id)}
-		<RecursoCard {...recurso} {session} />
-	{/each}
-</div>
-
 <!-- Paginación -->
 {#if pagination.totalPages > 1}
 	<div class="flex items-center justify-center gap-2 mt-12 mb-20 px-4">

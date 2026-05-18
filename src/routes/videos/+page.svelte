@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
+	import VideoActions from '$lib/components/videoActions.svelte';
 
 	let { data } = $props();
 	let videos = $derived(data.videos);
@@ -143,6 +144,9 @@
 						<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">{video.canal}</p>
 					{/if}
 					<p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{video.descripcion}</p>
+				</div>
+				<div class="flex items-center gap-2 px-4 pb-4">
+					<VideoActions videoId={video.id} {session} />
 				</div>
 			</a>
 		{/each}

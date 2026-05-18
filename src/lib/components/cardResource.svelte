@@ -39,9 +39,9 @@
 </script>
 
 <div
-	class="border border-gray-200 dark:border-gray-700 rounded-b-xl overflow-hidden bg-white dark:bg-gray-800"
+	class="group border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
 >
-	<a href={url} target="_blank" class="block">
+	<a href={url} target="_blank" class="block group-hover:scale-[1.02] transition-transform duration-300">
 		<div class="h-40 overflow-hidden bg-gray-100 dark:bg-gray-700">
 			{#if image_url}
 				<img src={image_url} alt={titulo} class="w-full h-full object-cover" />
@@ -84,7 +84,7 @@
 							'bg-gray-100 dark:bg-gray-700 dark:text-gray-300 text-gray-600'}">{nivel}</span
 					>
 				</div>
-				<span class="text-sm text-blue-600 dark:text-blue-400 font-medium">Visitar recurso →</span>
+				<span class="text-sm text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-1 transition-transform">Visitar recurso →</span>
 			</div>
 
 			{#if autor_nombre}
