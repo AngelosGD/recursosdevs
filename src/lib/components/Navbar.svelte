@@ -2,9 +2,11 @@
 	import { supabase } from '$lib/supabase.js';
 	import ThemeToggle from './ThemeToggle.svelte';
 
+	const ADMIN_EMAIL_FALLBACK = 'angelde9919@gmail.com';
 	let { session } = $props();
 	let menuAbierto = $state(false);
-	let isAdmin = $derived(import.meta.env.ADMIN_EMAIL && session?.user?.email === import.meta.env.ADMIN_EMAIL);
+	let adminEmail = $derived(typeof import.meta.env.ADMIN_EMAIL !== 'undefined' ? import.meta.env.ADMIN_EMAIL : ADMIN_EMAIL_FALLBACK);
+	let isAdmin = $derived(session?.user?.email === adminEmail);
 
 	async function logout() {
 		await supabase.auth.signOut();

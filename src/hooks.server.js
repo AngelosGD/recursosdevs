@@ -8,13 +8,14 @@ export const handle = sequence(async ({ event, resolve }) => {
 			getAll: () => event.cookies.getAll(),
 			setAll: (cookiesToSet) => {
 				cookiesToSet.forEach(({ name, value, options }) => {
-					const secure = event.request.url.startsWith('https://');
+					const isProduction = event.request.url.includes('workers.dev') || event.request.url.includes('pages.dev') || event.request.hostname !== 'localhost';
 					event.cookies.set(name, value, {
 						...options,
 						path: '/',
 						sameSite: 'lax',
-						secure,
-						httpOnly: false
+						secure: isProduction,
+						httpOnly: false,
+						partitioned: isProduction
 					});
 				});
 			}

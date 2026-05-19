@@ -1,5 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 
+const ADMIN_EMAIL_FALLBACK = 'angelde9919@gmail.com';
+
 export async function load({ locals, platform }) {
 	const { supabase } = locals;
 	
@@ -13,8 +15,9 @@ export async function load({ locals, platform }) {
 		throw redirect(303, '/login');
 	}
 
-	const adminEmail = platform?.env?.ADMIN_EMAIL;
-	if (!adminEmail || user.email !== adminEmail) {
+	const adminEmail = platform?.env?.ADMIN_EMAIL || ADMIN_EMAIL_FALLBACK;
+	
+	if (user.email !== adminEmail) {
 		throw redirect(303, '/');
 	}
 
