@@ -4,38 +4,39 @@
 
 Proyecto SvelteKit con Supabase funcionando en producción (Cloudflare Pages).
 
-## Ultimas mejoras aplicadas (17 Mayo 2026)
+## Ultimas mejoras aplicadas (18 Mayo 2026)
 
-### Favoritos unificados
-- Página /favoritos con 3 pestañas (Recursos, Cursos, Videos)
-- Botón de guardar videos en página /videos
-- Nuevo componente `videoActions.svelte` para toggle de favoritos de videos
-- Carga de favoritos desde 3 tablas: favoritos, cursos_favoritos, videos_favoritos
+### Corrección de bugs de seguridad y CSS
+- Email de admin ahora usa variable de entorno ADMIN_EMAIL con fallback
+- CSS duplicado eliminado en app.css
+- Typo corregido en submit: `gray800` → `gray-800`
 
-### Mejoras visuales en cards
-- Efecto hover con borde de color (azul recursos, púrpura cursos)
-- Sombra con tinte de color al hover
-- Animación de escala (scale-105)
-- Flecha "Ver recurso/curso" con transición animada hacia adelante
+### Mejoras en autenticación
+- Login ahora redirige correctamente al home después de iniciar sesión
+- Si el usuario ya tiene sesión, al acceder a /login redirige a /
+- Verificación de admin usa getUser() en lugar de getSession()
 
-### Filtros avanzados y sección de Videos (sesión anterior)
-- Barra lateral con filtros por categoría, nivel e idioma
-- Filtros por nivel (Principiante, Intermedio, Avanzado, Variado)
-- Filtros por idioma (Español, Inglés, Variado)
-- Filtros por precio en cursos (Gratis, De pago, Freemium)
-- Nueva sección /videos con thumbnails de YouTube
+### Cambios en estructura
+- `admin/+page.js` renombrado a `admin/+page.server.js` para acceso a locals
+- `login/+layout.server.js` creado para bloquear acceso cuando hay sesión
+- Cookies configuradas con `partitioned` para producción
 
-### Seguridad
-- Módulo `src/lib/sanitizer.js` para sanitizar inputs
-- Validación de URLs (http/https obligatorio)
-- Protección de ruta /admin con variable de entorno ADMIN_EMAIL
+## Bugs pendientes (NO RESUELTOS)
 
-## Bugs conocidos por corregir
+### PROBLEMA CRÍTICO: Admin no funciona en producción
+- En local funciona correctamente
+- En producción, al intentar acceder a /admin con sesión de admin, se queda en home
+- **Causa probable**: Cookies de sesión de Supabase no se propagan correctamente en Cloudflare Pages
+- **Intentos fallidos**:
+  - Usar getUser() en lugar de getSession()
+  - Agregar fallback de ADMIN_EMAIL
+  - Renombrar a +page.server.js
+  - Configurar cookies con partitioned y secure
+  - Cambiar sameSite de 'lax' a 'strict'
 
-1. **Email de admin hardcodeado** - En Navbar.svelte líneas 43 y 83
-   - Uso directo de `angelde9919@gmail.com` en lugar de variable ADMIN_EMAIL
-2. **CSS duplicado** - En app.css líneas 31-39 y 122-130
-3. **Typo CSS** - En submit/+page.svelte línea 437: `dark:bg-gray800` → `dark:bg-gray-800`
+### Error 406 en favoritos (producción)
+- Múltiples errores 406 (Not Acceptable) en console al cargar favoritos
+- No bloquea la funcionalidad pero llena la consola
 
 ## Base de datos
 
@@ -53,23 +54,28 @@ Tablas en Supabase:
 
 - `PUBLIC_SUPABASE_URL`
 - `PUBLIC_SUPABASE_ANON_KEY`
-- `ADMIN_EMAIL` (en Cloudflare vars)
+- `ADMIN_EMAIL` (en Cloudflare Pages Settings)
 
-## Siguientes mejoras sugeridas
+## Archivos clave modificados
 
-### Alta prioridad
-1. Loading states / skeleton loaders
-2. Toast notifications para feedback de acciones
-3. Corregir email hardcodeado del admin
+- `src/hooks.server.js` - Configuración de cookies para Supabase
+- `src/routes/admin/+page.server.js` - Verificación de admin
+- `src/routes/login/+layout.server.js` - Bloqueo de acceso con sesión
+- `src/routes/login/+page.svelte` - Redirección post-login
+- `src/lib/components/Navbar.svelte` - isAdmin con fallback
+- `src/app.css` - CSS duplicado eliminado
 
-### Media prioridad
-4. Scroll infinito (reemplazar paginación)
-5. SEO: meta tags, sitemap, Open Graph
-6. Perfil de usuario
+## Siguientes tareas para la siguiente sesión
 
-### Baja prioridad
-7. Búsqueda avanzada
-8. Optimizar favicon para todas las plataformas
+1. **Investigar y solucionar el problema del admin en producción**
+   - Opciones: revisar config de cookies en Supabase, usar método alternativo de verificación
+   - Alternativa: trabajar solo en local temporalmente
+
+2. **Investigar error 406 en favoritos**
+
+3. ** Mejoras visuales (opcional)**
+   - Loading states / skeleton loaders
+   - Toast notifications
 
 ## Comandos útiles
 
