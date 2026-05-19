@@ -57,7 +57,7 @@
 						? 'Email o contraseña incorrectos'
 						: err.message;
 			} else {
-				window.location.reload();
+				window.location.href = '/';
 			}
 		} else {
 			const { error: err } = await supabase.auth.signUp({ email, password });

@@ -1,6 +1,17 @@
-import { supabase } from '$lib/supabase.js';
+import { redirect } from '@sveltejs/kit';
 
-export async function load() {
+export async function load({ locals: { supabase }, platform }) {
+	const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+	if (authError || !user) {
+		throw redirect(303, '/login');
+	}
+
+	const adminEmail = platform?.env?.ADMIN_EMAIL;
+	if (!adminEmail || user.email !== adminEmail) {
+		throw redirect(303, '/');
+	}
+
 	const [recursosRes, cursosRes, mensajesRes, videosRes] = await Promise.all([
 		supabase.from('recursos').select('*'),
 		supabase.from('cursos').select('*'),
@@ -24,6 +35,7 @@ export async function load() {
 		cursosTodos,
 		cursosPendientes,
 		videosTodos,
-		videosPendientes
+		videosPendientes,
+		session: { user }
 	};
 }
