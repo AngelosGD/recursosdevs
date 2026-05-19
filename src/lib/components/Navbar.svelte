@@ -4,6 +4,7 @@
 
 	let { session } = $props();
 	let menuAbierto = $state(false);
+	let isAdmin = $derived(import.meta.env.ADMIN_EMAIL && session?.user?.email === import.meta.env.ADMIN_EMAIL);
 
 	async function logout() {
 		await supabase.auth.signOut();
@@ -40,7 +41,7 @@
 				<a href="/contacto" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-all">Contacto</a>
 				<ThemeToggle />
 				{#if session}
-					{#if session.user.email === 'angelde9919@gmail.com'}
+					{#if isAdmin}
 						<a href="/admin" class="px-3 py-2 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">Admin</a>
 					{/if}
 					<div class="flex items-center gap-2 pl-2 border-l border-gray-200 dark:border-gray-700">
@@ -80,7 +81,7 @@
 				<a href="/contacto" onclick={cerrarMenu} class="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">Contacto</a>
 				{#if session}
 					<a href="/favoritos" onclick={cerrarMenu} class="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">Favoritos</a>
-					{#if session.user.email === 'angelde9919@gmail.com'}
+					{#if isAdmin}
 						<a href="/admin" onclick={cerrarMenu} class="block px-4 py-3 rounded-xl text-base font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">Panel Admin</a>
 					{/if}
 					<div class="pt-2 border-t border-gray-200 dark:border-gray-700">

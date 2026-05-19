@@ -1,7 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 
-const ADMIN_EMAIL = 'angelde9919@gmail.com';
-
 export const load = async ({ locals: { supabase }, platform }) => {
 	const {
 		data: { session }
@@ -11,9 +9,9 @@ export const load = async ({ locals: { supabase }, platform }) => {
 		throw redirect(303, '/login');
 	}
 
-	const adminEmail = platform?.env?.ADMIN_EMAIL || ADMIN_EMAIL;
+	const adminEmail = platform?.env?.ADMIN_EMAIL;
 
-	if (session.user.email !== adminEmail) {
+	if (!adminEmail || session.user.email !== adminEmail) {
 		throw redirect(303, '/');
 	}
 

@@ -434,7 +434,7 @@
 					>
 					<select
 						bind:value={nivelV}
-						class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-400 dark:focus:border-red-500 bg-white dark:bg-gray800 dark:text-white"
+						class="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-400 dark:focus:border-red-500 bg-white dark:bg-gray-800 dark:text-white"
 					>
 						<option>Principiante</option>
 						<option>Intermedio</option>
