@@ -2,10 +2,10 @@ import { redirect } from '@sveltejs/kit';
 
 const ADMIN_EMAIL_FALLBACK = 'angelde9919@gmail.com';
 
-export const load = async ({ locals: { supabase }, platform }) => {
-	const { data: { user }, error: authError } = await supabase.auth.getUser();
+export const load = async ({ locals: { getUser }, platform }) => {
+	const user = await getUser();
 
-	if (authError || !user) {
+	if (!user) {
 		throw redirect(303, '/login');
 	}
 
@@ -15,9 +15,5 @@ export const load = async ({ locals: { supabase }, platform }) => {
 		throw redirect(303, '/');
 	}
 
-	const {
-		data: { session }
-	} = await supabase.auth.getSession();
-
-	return { session: { ...session, user } };
+	return { session: { user } };
 };

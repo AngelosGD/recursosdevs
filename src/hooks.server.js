@@ -3,19 +3,21 @@ import { sequence } from '@sveltejs/kit/hooks';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 
 export const handle = sequence(async ({ event, resolve }) => {
+	const isProduction = event.request.url.includes('workers.dev') || event.request.url.includes('pages.dev') || event.request.hostname !== 'localhost';
+
 	event.locals.supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
 		cookies: {
 			getAll: () => event.cookies.getAll(),
 			setAll: (cookiesToSet) => {
 				cookiesToSet.forEach(({ name, value, options }) => {
-					const isProduction = event.request.url.includes('workers.dev') || event.request.url.includes('pages.dev') || event.request.hostname !== 'localhost';
 					event.cookies.set(name, value, {
 						...options,
 						path: '/',
 						sameSite: 'lax',
 						secure: isProduction,
 						httpOnly: false,
-						partitioned: isProduction
+						partitioned: isProduction,
+						maxAge: options?.maxAge ?? 60 * 60 * 24 * 7
 					});
 				});
 			}
