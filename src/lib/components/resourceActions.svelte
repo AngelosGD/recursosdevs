@@ -36,7 +36,7 @@
 				.select('id')
 				.eq('recurso_id', recursoId)
 				.eq('user_id', session.user.id)
-				.single()
+				.maybeSingle()
 				.then(({ data }) => {
 					guardado = !!data;
 				});

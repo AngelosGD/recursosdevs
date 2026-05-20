@@ -38,7 +38,7 @@
 				.select('id')
 				.eq('video_id', videoId)
 				.eq('user_id', session.user.id)
-				.single()
+				.maybeSingle()
 				.then(({ data }) => {
 					guardado = !!data;
 				});
