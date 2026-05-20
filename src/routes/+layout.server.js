@@ -1,4 +1,8 @@
-export const load = async ({ locals: { getSession } }) => {
+export const load = async ({ locals: { getSession }, cookies }) => {
 	const session = await getSession();
-	return { session };
+
+	const isAdminCookie = cookies.get('is_admin');
+	const adminFromCookie = isAdminCookie === 'true';
+
+	return { session, isAdmin: adminFromCookie };
 };

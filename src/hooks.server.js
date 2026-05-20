@@ -30,7 +30,10 @@ export const handle = sequence(async ({ event, resolve }) => {
 			error
 		} = await event.locals.supabase.auth.getSession();
 		if (error) {
-			console.error('Error getting session:', error);
+			console.error('[DEBUG] Error getting session:', error.message);
+		}
+		if (!session) {
+			console.log('[DEBUG] No session found');
 		}
 		return session;
 	};
@@ -41,7 +44,10 @@ export const handle = sequence(async ({ event, resolve }) => {
 			error
 		} = await event.locals.supabase.auth.getUser();
 		if (error) {
-			console.error('Error getting user:', error);
+			console.error('[DEBUG] Error getting user:', error.message);
+		}
+		if (!user) {
+			console.log('[DEBUG] No user found');
 		}
 		return user;
 	};
