@@ -51,7 +51,8 @@ pnpm dev          # Desarrollo
 pnpm build        # Producción
 pnpm preview      # Previsualizar build
 pnpm lint         # Verificar código
-pnpm format        # Formatear código
+pnpm format       # Formatear código
+node scripts/import-content.mjs # Importar contenido desde JSON
 ```
 
 ## Base de datos

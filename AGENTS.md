@@ -4,22 +4,31 @@
 
 Proyecto SvelteKit con Supabase funcionando en producción (Cloudflare Pages).
 
-## Ultimas mejoras aplicadas (18 Mayo 2026)
+## Últimas mejoras aplicadas (21 Mayo 2026)
 
-### Corrección de bugs de seguridad y CSS
-- Email de admin ahora usa variable de entorno ADMIN_EMAIL con fallback
-- CSS duplicado eliminado en app.css
-- Typo corregido en submit: `gray800` → `gray-800`
+### Script de importación automatizado
+- Creado `scripts/import-content.mjs` - scraper que extrae metadata de URLs (OG tags, YouTube oEmbed)
+- Inserta directamente a Supabase con `aprobado: true`
+- Soporta modo interactivo, por JSON, o CLI directo
+- Detecta YouTube y usa `hqdefault.jpg` como fallback si `maxresdefault.jpg` no existe
+- Uso: `node scripts/import-content.mjs archivo.json`
 
-### Mejoras en autenticación
-- Login ahora redirige correctamente al home después de iniciar sesión
-- Si el usuario ya tiene sesión, al acceder a /login redirige a /
-- Verificación de admin usa getUser() en lugar de getSession()
+### Importación masiva de cursos
+- Agregados 15 cursos vía script (desde YouTube: Fazt, midulive, Fernando Herrera, MoureDev)
+- Thumbnails corregidos: `maxresdefault.jpg` → `hqdefault.jpg` para 6 cursos que daban 404
+- Script ahora verifica disponibilidad de thumbnail antes de asignarlo
 
-### Cambios en estructura
-- `admin/+page.js` renombrado a `admin/+page.server.js` para acceso a locals
-- `login/+layout.server.js` creado para bloquear acceso cuando hay sesión
-- Cookies configuradas con `partitioned` para producción
+### Fallback visual en cards
+- `cardCurso.svelte` y `cardResource.svelte`: `onerror` en imágenes + estado `imgError`
+- Si una imagen falla al cargar, muestra el placeholder SVG en lugar del icono roto
+
+### Paginación y filtros corregidos
+- `cursos/+page.js`: ahora carga **todos** los cursos aprobados (sin paginación server-side)
+- `cursos/+page.svelte`:
+  - Reactividad arreglada con `$derived` en lugar de asignación directa
+  - Filtros (categoría, nivel, precio, búsqueda) aplican sobre el total de cursos
+  - Paginación 100% cliente con estado local (`paginaActual`), sin recargar
+  - Navegación por página instantánea al cambiar filtros o página
 
 ## Bugs pendientes (NO RESUELTOS)
 
@@ -64,23 +73,28 @@ Tablas en Supabase:
 - `src/routes/login/+page.svelte` - Redirección post-login
 - `src/lib/components/Navbar.svelte` - isAdmin con fallback
 - `src/app.css` - CSS duplicado eliminado
+- `src/routes/cursos/+page.js` - Carga todos los cursos, filtros server-side removidos
+- `src/routes/cursos/+page.svelte` - Paginación y filtros 100% cliente con $derived
+- `src/lib/components/cardCurso.svelte` - onerror handler para imágenes rotas
+- `src/lib/components/cardResource.svelte` - onerror handler para imágenes rotas
+- `scripts/import-content.mjs` - Script de scraping + importación a Supabase
 
 ## Siguientes tareas para la siguiente sesión
 
 1. **Investigar y solucionar el problema del admin en producción**
    - Opciones: revisar config de cookies en Supabase, usar método alternativo de verificación
-   - Alternativa: trabajar solo en local temporalmente
 
 2. **Investigar error 406 en favoritos**
 
-3. ** Mejoras visuales (opcional)**
+3. **Mejoras visuales (opcional)**
    - Loading states / skeleton loaders
    - Toast notifications
 
 ## Comandos útiles
 
 ```bash
-pnpm dev        # Desarrollo
-pnpm build      # Build producción
-pnpm lint       # Verificar código
+pnpm dev                  # Desarrollo
+pnpm build                # Build producción
+pnpm lint                 # Verificar código
+node scripts/import-content.mjs <archivo.json>  # Importar contenido
 ```
