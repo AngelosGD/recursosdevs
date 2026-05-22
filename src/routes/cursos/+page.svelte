@@ -1,24 +1,28 @@
 <script>
 	import CardCurso from '$lib/components/cardCurso.svelte';
-	import { page } from '$app/state';
 
 	let { data } = $props();
-	let cursos = data.cursos;
-	let session = data.session;
-	let pagination = data.pagination;
+	let todosLosCursos = $derived(data.cursos);
+	let session = $derived(data.session);
+
+	let paginaActual = $state(1);
+	const porPagina = 12;
 
 	let categoriaActiva = $state('Todos');
 	let busqueda = $state('');
 	let nivelActivo = $state('Todos');
 	let precioActivo = $state('Todos');
 
-	const todasCategorias = ['Todos', ...new Set(cursos.flatMap((c) => c.categorias))];
+	let todasCategorias = $derived([
+		'Todos',
+		...new Set(todosLosCursos.flatMap((c) => c.categorias))
+	]);
 	const niveles = ['Todos', 'Principiante', 'Intermedio', 'Avanzado', 'Variado'];
 	const precios = ['Todos', 'Gratis', 'De pago', 'Freemium'];
 
 	let cursosFiltrados = $derived(
 		(() => {
-			let lista = cursos;
+			let lista = todosLosCursos;
 
 			if (categoriaActiva !== 'Todos') {
 				lista = lista.filter((c) => c.categorias.includes(categoriaActiva));
@@ -45,11 +49,24 @@
 		})()
 	);
 
+	let totalPaginas = $derived(Math.ceil(cursosFiltrados.length / porPagina));
+
+	let cursosPagina = $derived(
+		cursosFiltrados.slice((paginaActual - 1) * porPagina, paginaActual * porPagina)
+	);
+
+	let paginas = $derived(Array.from({ length: totalPaginas }, (_, i) => i + 1));
+
+	function irPagina(nuevaPagina) {
+		paginaActual = Math.max(1, Math.min(nuevaPagina, totalPaginas));
+	}
+
 	function limpiarFiltros() {
 		categoriaActiva = 'Todos';
 		nivelActivo = 'Todos';
 		precioActivo = 'Todos';
 		busqueda = '';
+		paginaActual = 1;
 	}
 
 	let sidebarAbierta = $state(false);
@@ -85,7 +102,12 @@
 		class="lg:hidden w-full flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300"
 	>
 		<span>Filtros</span>
-		<svg class="w-5 h-5 transition-transform {sidebarAbierta ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<svg
+			class="w-5 h-5 transition-transform {sidebarAbierta ? 'rotate-180' : ''}"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24"
+		>
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 		</svg>
 	</button>
@@ -101,7 +123,8 @@
 				{#each todasCategorias as cat (cat)}
 					<button
 						onclick={() => (categoriaActiva = cat)}
-						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {categoriaActiva === cat
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {categoriaActiva ===
+						cat
 							? 'bg-blue-600 text-white dark:bg-blue-500'
 							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 					>
@@ -118,7 +141,8 @@
 				{#each niveles as nivel (nivel)}
 					<button
 						onclick={() => (nivelActivo = nivel)}
-						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {nivelActivo === nivel
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {nivelActivo ===
+						nivel
 							? 'bg-blue-600 text-white dark:bg-blue-500'
 							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 					>
@@ -135,7 +159,8 @@
 				{#each precios as precio (precio)}
 					<button
 						onclick={() => (precioActivo = precio)}
-						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {precioActivo === precio
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {precioActivo ===
+						precio
 							? 'bg-blue-600 text-white dark:bg-blue-500'
 							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 					>
@@ -154,55 +179,58 @@
 	</aside>
 
 	<div class="flex-1">
-		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{cursosFiltrados.length} cursos encontrados</p>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+			{cursosFiltrados.length} cursos encontrados
+		</p>
 		{#if cursosFiltrados.length === 0}
 			<div class="text-center py-16 px-4">
 				<p class="text-5xl mb-4">📚</p>
-				<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay cursos todavía</h2>
+				<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+					No hay cursos todavía
+				</h2>
 				<p class="text-gray-500 dark:text-gray-400">Pronto añadiremos los mejores cursos para ti</p>
 			</div>
 		{:else}
 			<!-- Grid cursos -->
 			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-				{#each cursosFiltrados as curso (curso.id)}
+				{#each cursosPagina as curso (curso.id)}
 					<CardCurso {...curso} {session} />
 				{/each}
 			</div>
 
 			<!-- Paginación -->
-			{#if pagination.totalPages > 1}
+			{#if totalPaginas > 1}
 				<div class="flex items-center justify-center gap-2 mt-12 mb-20 px-4">
-					{#if pagination.page > 1}
-						<a
-							href="/cursos?page={pagination.page - 1}"
+					{#if paginaActual > 1}
+						<button
+							onclick={() => irPagina(paginaActual - 1)}
 							class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
 						>
 							← Anterior
-						</a>
+						</button>
 					{/if}
 
 					<div class="flex gap-1">
-						{#each Array(pagination.totalPages) as _, i}
-							{@const pageNum = i + 1}
-							<a
-								href="/cursos?page={pageNum}"
+						{#each paginas as pageNum (pageNum)}
+							<button
+								onclick={() => irPagina(pageNum)}
 								class="w-10 h-10 flex items-center justify-center rounded-lg transition-colors {pageNum ===
-								pagination.page
+								paginaActual
 									? 'bg-blue-600 text-white'
 									: 'border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 							>
 								{pageNum}
-							</a>
+							</button>
 						{/each}
 					</div>
 
-					{#if pagination.page < pagination.totalPages}
-						<a
-							href="/cursos?page={pagination.page + 1}"
+					{#if paginaActual < totalPaginas}
+						<button
+							onclick={() => irPagina(paginaActual + 1)}
 							class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
 						>
 							Siguiente →
-						</a>
+						</button>
 					{/if}
 				</div>
 			{/if}

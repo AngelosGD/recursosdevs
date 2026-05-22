@@ -5,6 +5,8 @@
 	let { titulo, descripcion, categorias, url, precio, instructor, nivel, imagen, session, id } =
 		$props();
 
+	let imgError = $state(false);
+
 	const nivelColor = {
 		Principiante: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
 		Medio: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
@@ -19,10 +21,19 @@
 <div
 	class="group border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden bg-white dark:bg-gray-800 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
 >
-	<a href={url} target="_blank" class="block group-hover:scale-[1.02] transition-transform duration-300">
+	<a
+		href={url}
+		target="_blank"
+		class="block group-hover:scale-[1.02] transition-transform duration-300"
+	>
 		<div class="h-40 overflow-hidden bg-gray-100 dark:bg-gray-700">
-			{#if imagen}
-				<img src={imagen} alt={titulo} class="w-full h-full object-cover" />
+			{#if imagen && !imgError}
+				<img
+					src={imagen}
+					alt={titulo}
+					class="w-full h-full object-cover"
+					onerror={() => (imgError = true)}
+				/>
 			{:else}
 				<div
 					class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500"
@@ -69,7 +80,10 @@
 							'bg-gray-100 dark:bg-gray-700 dark:text-gray-300 text-gray-600'}">{nivel}</span
 					>
 				</div>
-				<span class="text-sm text-purple-600 dark:text-purple-400 font-medium group-hover:translate-x-1 transition-transform">Ver curso →</span>
+				<span
+					class="text-sm text-purple-600 dark:text-purple-400 font-medium group-hover:translate-x-1 transition-transform"
+					>Ver curso →</span
+				>
 			</div>
 		</div>
 	</a>
