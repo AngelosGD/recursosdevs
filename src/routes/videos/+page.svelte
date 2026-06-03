@@ -8,9 +8,11 @@
 	let session = $derived(data.session);
 
 	let categoriaActiva = $state('Todos');
+	let idiomaActivo = $state('Todos');
 	let busqueda = $state('');
 
 	const todasCategorias = $derived(['Todos', ...new Set(videos.flatMap((v) => v.categorias))]);
+	const todosIdiomas = $derived(['Todos', ...new Set(videos.flatMap((v) => v.idioma).filter(Boolean))]);
 
 	let videosFiltrados = $derived(
 		(() => {
@@ -18,6 +20,10 @@
 				categoriaActiva === 'Todos'
 					? videos
 					: videos.filter((v) => v.categorias.includes(categoriaActiva));
+
+			if (idiomaActivo !== 'Todos') {
+				lista = lista.filter((v) => v.idioma === idiomaActivo);
+			}
 
 			if (busqueda.trim()) {
 				lista = lista.filter(
@@ -65,7 +71,7 @@
 </div>
 
 <div class="px-4">
-	<div class="flex flex-wrap gap-2 mb-8">
+	<div class="flex flex-wrap gap-2 mb-4">
 		{#each todasCategorias as cat (cat)}
 			<button
 				onclick={() => (categoriaActiva = cat)}
@@ -78,6 +84,22 @@
 			</button>
 		{/each}
 	</div>
+
+	{#if todosIdiomas.length > 1}
+		<div class="flex flex-wrap gap-2 mb-8">
+			{#each todosIdiomas as idioma (idioma)}
+				<button
+					onclick={() => (idiomaActivo = idioma)}
+					class="px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+						{idiomaActivo === idioma
+						? 'bg-green-600 text-white dark:bg-green-500'
+						: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+				>
+					{idioma}
+				</button>
+			{/each}
+		</div>
+	{/if}
 </div>
 
 {#if videosFiltrados.length === 0}
@@ -135,6 +157,9 @@
 						{#each video.categorias?.slice(0, 3) as cat (cat)}
 							<span class="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium">{cat}</span>
 						{/each}
+						{#if video.idioma}
+							<span class="text-xs bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full">{video.idioma}</span>
+						{/if}
 						{#if video.nivel}
 							<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full ml-auto">{video.nivel}</span>
 						{/if}
