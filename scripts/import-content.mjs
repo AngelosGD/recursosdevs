@@ -15,7 +15,6 @@ import { createInterface } from 'readline';
 
 // ─── Config ────────────────────────────────────────────────────────────────
 const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL;
-
 const SUPABASE_ANON_KEY = process.env.PUBLIC_SUPABASE_ANON_KEY;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
@@ -69,7 +68,7 @@ async function scrapeUrl(url) {
 	if (isYouTube) {
 		const oembed = await fetchYouTubeOembed(isYouTube);
 		if (oembed) {
-			data.title = htmlDecode(oembed.title || '');
+const SUPABASE_ANON_KEY = process.env.PUBLIC_SUPABASE_ANON_KEY;
 			data.canal = htmlDecode(oembed.author_name || '');
 		}
 		// Try maxresdefault, fallback to hqdefault
