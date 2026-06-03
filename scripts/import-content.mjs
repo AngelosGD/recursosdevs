@@ -14,16 +14,18 @@ import { readFileSync, existsSync } from 'fs';
 import { createInterface } from 'readline';
 
 // ─── Config ────────────────────────────────────────────────────────────────
-<<<<<<< HEAD
 const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.PUBLIC_SUPABASE_ANON_KEY;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-=======
-const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL || 'https://aysdluazmwgphosvouqr.supabase.co';
-const SUPABASE_ANON_KEY =
-	process.env.PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_NqDJftR8NggSFHf3WChFow_JClFDYc9';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'angelde9919@gmail.com';
->>>>>>> 49eaf719049d31cfa5b071fefa2b268d6ade44de
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !ADMIN_EMAIL) {
+	console.error('❌ Faltan variables de entorno requeridas:');
+	if (!SUPABASE_URL) console.error('   - PUBLIC_SUPABASE_URL');
+	if (!SUPABASE_ANON_KEY) console.error('   - PUBLIC_SUPABASE_ANON_KEY');
+	if (!ADMIN_EMAIL) console.error('   - ADMIN_EMAIL');
+	console.error('\nConfigura las variables en tu archivo .env o en el entorno.');
+	process.exit(1);
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -75,11 +77,7 @@ async function scrapeUrl(url) {
 	if (isYouTube) {
 		const oembed = await fetchYouTubeOembed(isYouTube);
 		if (oembed) {
-<<<<<<< HEAD
-const SUPABASE_ANON_KEY = process.env.PUBLIC_SUPABASE_ANON_KEY;
-=======
 			data.title = htmlDecode(oembed.title || '');
->>>>>>> 49eaf719049d31cfa5b071fefa2b268d6ade44de
 			data.canal = htmlDecode(oembed.author_name || '');
 		}
 		// Try maxresdefault, fallback to hqdefault
