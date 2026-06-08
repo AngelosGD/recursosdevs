@@ -3,6 +3,8 @@
 	import { goto } from '$app/navigation';
 
 	let { data } = $props();
+	let countCursos = $derived(data.countCursos);
+	let countVideos = $derived(data.countVideos);
 	let recursos = $derived(data.recursos);
 	let recientes = $derived(data.recientes);
 	let pagination = $derived(data.pagination);
@@ -70,6 +72,99 @@
 		En esta pagina encontraras recursos sobre todo lo necesario para aprender programacion o
 		utilizar herramientas tendencia actuales
 	</p>
+</section>
+
+<!--? Seccion de cards de cuantos aspectos hay de cada cosa caon-->
+
+<section class="px-4 mb-8 sm:mb-14">
+	<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+		<a
+			href="/"
+			class="group flex items-center gap-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500"
+		>
+			<div
+				class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0"
+			>
+				<svg
+					class="w-6 h-6 text-blue-600 dark:text-blue-400"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+					/>
+				</svg>
+			</div>
+			<div>
+				<p class="text-2xl font-bold text-gray-900 dark:text-white">+{pagination.total}</p>
+				<p class="text-sm text-gray-500 dark:text-gray-400">Recursos</p>
+			</div>
+		</a>
+
+		<a
+			href="/cursos"
+			class="group flex items-center gap-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:border-purple-300 dark:hover:border-purple-500"
+		>
+			<div
+				class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shrink-0"
+			>
+				<svg
+					class="w-6 h-6 text-purple-600 dark:text-purple-400"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
+					/>
+				</svg>
+			</div>
+			<div>
+				<p class="text-2xl font-bold text-gray-900 dark:text-white">+{countCursos}</p>
+				<p class="text-sm text-gray-500 dark:text-gray-400">Cursos</p>
+			</div>
+		</a>
+
+		<a
+			href="/videos"
+			class="group flex items-center gap-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:border-red-300 dark:hover:border-red-500"
+		>
+			<div
+				class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0"
+			>
+				<svg
+					class="w-6 h-6 text-red-600 dark:text-red-400"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+					/>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+					/>
+				</svg>
+			</div>
+			<div>
+				<p class="text-2xl font-bold text-gray-900 dark:text-white">+{countVideos}</p>
+				<p class="text-sm text-gray-500 dark:text-gray-400">Videos</p>
+			</div>
+		</a>
+	</div>
 </section>
 
 <section class="mb-8 sm:mb-14 px-4">
@@ -164,7 +259,12 @@
 		class="lg:hidden w-full flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300"
 	>
 		<span>Filtros</span>
-		<svg class="w-5 h-5 transition-transform {sidebarAbierta ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<svg
+			class="w-5 h-5 transition-transform {sidebarAbierta ? 'rotate-180' : ''}"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24"
+		>
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 		</svg>
 	</button>
@@ -181,7 +281,8 @@
 				{#each todasCategorias as cat (cat)}
 					<button
 						onclick={() => (categoriaActiva = cat)}
-						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {categoriaActiva === cat
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {categoriaActiva ===
+						cat
 							? 'bg-blue-600 text-white dark:bg-blue-500'
 							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 					>
@@ -198,7 +299,8 @@
 				{#each niveles as nivel (nivel)}
 					<button
 						onclick={() => (nivelActivo = nivel)}
-						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {nivelActivo === nivel
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {nivelActivo ===
+						nivel
 							? 'bg-blue-600 text-white dark:bg-blue-500'
 							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 					>
@@ -215,7 +317,8 @@
 				{#each idiomas as idioma (idioma)}
 					<button
 						onclick={() => (idiomaActivo = idioma)}
-						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {idiomaActivo === idioma
+						class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors text-left {idiomaActivo ===
+						idioma
 							? 'bg-blue-600 text-white dark:bg-blue-500'
 							: 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}"
 					>
@@ -236,7 +339,9 @@
 
 	<!-- Resultados -->
 	<div class="flex-1">
-		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{recursosFiltrados.length} recursos encontrados</p>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+			{recursosFiltrados.length} recursos encontrados
+		</p>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 			{#each recursosFiltrados as recurso (recurso.id)}
 				<RecursoCard {...recurso} {session} />
@@ -258,16 +363,15 @@
 		{/if}
 
 		<div class="flex gap-1">
-			{#each Array(pagination.totalPages) as _, i}
-				{@const pageNum = i + 1}
+			{#each Array(pagination.totalPages) as _, i (i)}
 				<button
-					onclick={() => irPagina(pageNum)}
-					class="w-10 h-10 flex items-center justify-center rounded-lg transition-colors {pageNum ===
+					onclick={() => irPagina(i + 1)}
+					class="w-10 h-10 flex items-center justify-center rounded-lg transition-colors {i + 1 ===
 					pagination.page
 						? 'bg-blue-600 text-white'
 						: 'border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}"
 				>
-					{pageNum}
+					{i + 1}
 				</button>
 			{/each}
 		</div>

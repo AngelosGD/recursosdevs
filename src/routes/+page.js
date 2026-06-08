@@ -8,7 +8,13 @@ export async function load({ url, parent }) {
 	const from = (page - 1) * perPage;
 	const to = from + perPage - 1;
 
-	const [{ data: recursos, count }, { data: recientes }] = await Promise.all([
+	// ESTO VA EN LÍNEA 11 (reemplaza desde "const [{ data: recursos, count }, { data: recientes }]")
+	const [
+		{ data: recursos, count },
+		{ data: recientes },
+		{ count: countCursos },
+		{ count: countVideos }
+	] = await Promise.all([
 		supabase
 			.from('recursos')
 			.select('*', { count: 'exact' })
@@ -20,12 +26,16 @@ export async function load({ url, parent }) {
 			.select('*')
 			.eq('aprobado', true)
 			.order('created_at', { ascending: false })
-			.limit(3)
+			.limit(3),
+		supabase.from('cursos').select('*', { count: 'exact', head: true }).eq('aprobado', true),
+		supabase.from('videos').select('*', { count: 'exact', head: true }).eq('aprobado', true)
 	]);
 
 	return {
 		recursos: recursos ?? [],
 		recientes: recientes ?? [],
+		countCursos: countCursos ?? 0,
+		countVideos: countVideos ?? 0,
 		pagination: {
 			page,
 			perPage,
